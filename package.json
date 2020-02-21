@@ -1,0 +1,20 @@
+{
+  "name": "xtremebot",
+  "version": "0.0.1",
+  "description": "XTREME.BOT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/korlando/xtremebot.git"
+  },
+  "dependencies": {
+    "@slack/events-api": "^2.3.1",
+    "@slack/web-api": "^5.7.0",
+    "bluebird": "^3.7.2",
+    "express": "^4.17.1",
+    "minimist": "^1.2.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.27",
+    "mongoose": "^5.9.1"
+  }
+}
