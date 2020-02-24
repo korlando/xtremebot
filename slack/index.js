@@ -7,6 +7,13 @@ const slackEventHandler = (slackEvent) => {
 	});
 };
 
+const initializeSlack = () => {
+	bots.forEach((bot) => {
+		bot.initializeSlack();
+	});
+};
+
 module.exports = {
 	slackEventHandler,
+	initializeSlack,
 };

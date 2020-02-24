@@ -29,4 +29,15 @@ module.exports = {
 		eventId: b.event_id,
 		eventTime: b.event_time,
 	}),
+
+	transformSlackAuthTest: (b) => ({
+		ok: b.ok,
+		url: b.url,
+		team: b.team,
+		user: b.user,
+		teamId: b.team_id,
+		userId: b.user_id,
+		botId: b.bot_id,
+		responseMetadata: b.response_metadata,
+	}),
 };

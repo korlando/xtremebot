@@ -4,13 +4,15 @@ const methods = require('../methods');
 const instances = [
 	{
 		web: new WebClient(process.env.TEST_WELCOMEBOT_SLACK_TOKEN),
-		botTeamId: 'TC6DG4XED',
-		botUserId: 'UU3RUS61J',
+		initialized: false,
+		botTeamId: '',
+		botUserId: '',
 	},
 	{
 		web: new WebClient(process.env.MK_XTREMEBOT_SLACK_TOKEN),
-		botTeamId: 'TRF1B2NN4',
-		botUserId: 'UUF4Y0ZV4',
+		initialized: false,
+		botTeamId: '',
+		botUserId: '',
 	},
 ];
 
@@ -19,7 +21,11 @@ const handleMessageEvent = async (slackEvent) => {
 	const { text, channel, user } = event;
 
 	instances.forEach(async (instance) => {
-		const { web, botUserId, botTeamId } = instance;
+		const { web, initialized, botUserId, botTeamId } = instance;
+		if (!initialized) {
+			// bot hasn't finished set up
+			return;
+		}
 		if (teamId !== botTeamId) {
 			return;
 		}
@@ -50,9 +56,23 @@ const slackEventHandler = async (slackEvent) => {
 	}
 };
 
+const initializeSlack = async () => {
+	instances.forEach(async (instance) => {
+		const { web } = instance;
+		// fetch the user and team IDs of each bot instance
+		const res = await methods.authTest(web);
+		if (res.ok) {
+			instance.botUserId = res.userId;
+			instance.botTeamId = res.teamId;
+			instance.initialized = true;
+		}
+	});
+};
+
 const welcomebot = {
 	name: 'welcomebot',
 	slackEventHandler,
+	initializeSlack,
 };
 
 module.exports = welcomebot;
