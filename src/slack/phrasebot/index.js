@@ -22,6 +22,8 @@ const instances = [
 	},
 ];
 const commandTrigger = process.env.PHRASEBOT_TRIGGER;
+const whitelistedUsersString = process.env.PHRASEBOT_USERS || '';
+const whitelistedUsers = whitelistedUsersString.split(',');
 
 const processMessage = (instance, messageEvent) => {
 	const { channel, text } = messageEvent;
@@ -69,6 +71,10 @@ const processMessage = (instance, messageEvent) => {
 const handleMessageEvent = async (slackEvent) => {
 	const { event, teamId } = slackEvent;
 	const { text, channel, user } = event;
+
+	if (!whitelistedUsers.includes(user)) {
+		return;
+	}
 
 	instances.forEach(async (instance) => {
 		const { web, initialized, botUserId, botTeamId } = instance;
