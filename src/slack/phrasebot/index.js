@@ -33,7 +33,8 @@ const processMessage = (instance, messageEvent) => {
  		return;
  	}
 
-	const commandRegex = new RegExp(`^(${commandTrigger}|<@${botUserId}>),?[ ]+(.*)$`, 'i');
+ 	const botUserStr = `<@${botUserId}>`;
+	const commandRegex = new RegExp(`^(${commandTrigger}|${botUserStr}),?[ ]+(.*)$`, 'i');
 	const commandMatch = text.trim().match(commandRegex);
 	// command is the portion of text after the trigger (after 'bot', for example)
 	// this assumes commandTrigger is of the format (x|y|z); extra parens affect the match position
@@ -58,7 +59,7 @@ const processMessage = (instance, messageEvent) => {
 	  }
 	}
 	// no command match; check for generic trigger
-	const triggerMatch = text.trim().match(new RegExp(commandTrigger, 'i'));
+	const triggerMatch = text.trim().match(new RegExp(`(${commandTrigger}|${botUserStr})`, 'i'));
 	if (triggerMatch && instance.phrasesActive) {
 		// send a random phrase
 		send({
