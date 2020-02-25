@@ -1,6 +1,8 @@
 const { WebClient } = require('@slack/web-api');
+
 const methods = require('../methods');
 const commands = require('./commands');
+const { SlackBot } = require('../../db');
 
 const instances = [
 	{
