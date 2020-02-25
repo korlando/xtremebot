@@ -1,5 +1,13 @@
-const cmd = () => {
-	
+const utils = require('../../utils');
+
+const options = ['heads', 'tails'];
+
+const cmd = ({ send, messageEvent }) => {
+	const { channel } = messageEvent;
+	send({
+		text: utils.randomValue(options),
+		channel,
+	});
 };
 
 module.exports = {
