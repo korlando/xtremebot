@@ -4,6 +4,14 @@ const cmd = async ({ send, instance, messageEvent }) => {
 	const { channel } = messageEvent;
 	const { phrases } = instance.slackBot;
 
+	if (!phrases.length) {
+		send({
+			text: 'No phrases.',
+			channel,
+		});
+		return;
+	}
+
 	let text = '```\n';
 	phrases.forEach((phrase) => {
 		text += `${phrase}\n`;
@@ -18,5 +26,5 @@ const cmd = async ({ send, instance, messageEvent }) => {
 
 module.exports = {
   cmd,
-  regex: /^list[ ]+(phrases|sayings)([ ]+)?$/i,
+  regex: /^(list|ls)[ ]+(phrases|sayings)([ ]+)?$/i,
 };

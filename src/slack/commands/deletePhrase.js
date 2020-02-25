@@ -28,5 +28,5 @@ const cmd = async ({ send, instance, messageEvent, match }) => {
 
 module.exports = {
   cmd,
-  regex: /^(delete|remove)[ ]+(phrase|saying)[ ]+(.+)$/i,
+  regex: /^(delete|remove|rm)[ ]+(phrase|saying)[ ]+(.+)$/i,
 };
