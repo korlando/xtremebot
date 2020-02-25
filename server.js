@@ -11,7 +11,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
-const { initializeSlack } = require('./slack');
+const { initializeSlack } = require('./src/slack');
+const routes = require('./src/routes');
 
 mongoose.Promise = bluebird;
 
@@ -45,8 +46,6 @@ server.on('listening', () => {
 	console.log(`Server listening on port ${port}`);
 	initializeSlack();
 });
-
-const routes = require('./routes');
 
 app.use('/', routes);
 

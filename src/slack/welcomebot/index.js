@@ -1,5 +1,6 @@
 const { WebClient } = require('@slack/web-api');
 const methods = require('../methods');
+const commands = require('../commands');
 
 const instances = [
 	{
@@ -15,6 +16,51 @@ const instances = [
 		botUserId: '',
 	},
 ];
+const commandTrigger = '(bot)';
+
+const processMessage = async (botInstance, messageEvent) => {
+	const { channel, text } = messageEvent;
+	const { botUserId } = botInstance;
+
+ 	if (typeof text !== 'string') {
+ 		return;
+ 	}
+ 	// ignore content between double parens
+ 	const readableText = text.trim().replace(/\(\(.*\)\)/gi, '');
+
+	const commandRegex = new RegExp(`^(${commandTrigger}|<@${botUserId}>),?[ ]+(.*)$`, 'i');
+	const commandMatch = readableText.match(commandRegex);
+	// command is the portion of text after the trigger (after 'bot', for example)
+	const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
+
+	if (commandText) {
+	  for (let i = 0; i < commands.length; i++) {
+	    const { cmd, regex } = commands[i];
+	    const match = commandText.match(regex);
+	    if (match) {
+	    	const send = async ({ text, channel }) => {
+	    		try {
+	    			await methods.postMessage(botInstance.web, { text, channel });
+	    		} catch (e) {
+	    			console.log(e);
+	    		}
+	    	};
+	      return cmd({ send, instance, messageEvent, commandTrigger, match });
+	    }
+	  }
+	}
+
+	if (text.trim().toLowerCase() === 'welcome') {
+		try {
+			await methods.postMessage(web, {
+				text: 'welcome',
+				channel,
+			});
+		} catch (e) {
+			console.log(e);
+		}
+	}
+};
 
 const handleMessageEvent = async (slackEvent) => {
 	const { event, teamId } = slackEvent;
@@ -33,16 +79,7 @@ const handleMessageEvent = async (slackEvent) => {
 			// prevent cycle where bot responds to itself
 			return;
 		}
-		if (text.trim().toLowerCase() === 'welcome') {
-			try {
-				await methods.postMessage(web, {
-					text: 'welcome',
-					channel,
-				});
-			} catch (e) {
-				console.log(e);
-			}
-		}
+		processMessage(instance, event);
 	});
 };
 
