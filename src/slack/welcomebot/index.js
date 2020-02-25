@@ -6,12 +6,14 @@ const instances = [
 	{
 		web: new WebClient(process.env.TEST_WELCOMEBOT_SLACK_TOKEN),
 		initialized: false,
+		phrasesActive: false,
 		botTeamId: '',
 		botUserId: '',
 	},
 	{
 		web: new WebClient(process.env.MK_XTREMEBOT_SLACK_TOKEN),
 		initialized: false,
+		phrasesActive: false,
 		botTeamId: '',
 		botUserId: '',
 	},
@@ -97,13 +99,34 @@ const slackEventHandler = async (slackEvent) => {
 const initializeSlack = async () => {
 	instances.forEach(async (instance) => {
 		const { web } = instance;
-		// fetch the user and team IDs of each bot instance
-		const res = await methods.authTest(web);
-		if (res.ok) {
-			instance.botUserId = res.userId;
-			instance.botTeamId = res.teamId;
+		try {
+			// fetch the user and team IDs of each bot instance
+			const authRes = await methods.authTest(web);
+			if (!authRes.ok) {
+				return;
+			}
+			const { botId, userId, teamId } = authRes;
+			instance.botUserId = userId;
+			instance.botTeamId = teamId;
+			const botRes = await SlackBot.find({ botId, userId, teamId }).limit(1);
+			let slackBot;
+			if (!botRes.length) {
+				// bot doesn't exist yet, create it
+				bot = new SlackBot();
+				bot.botId = botId;
+				bot.userId = userId;
+				bot.teamId = teamId;
+				await bot.save();
+				slackBot = JSON.parse(JSON.stringify(bot));
+			} else {
+				slackBot = JSON.parse(JSON.stringify(botRes[0]));
+			}
+			instance.slackBot = slackBot;
+			instance.phrasesActive = true;
 			instance.initialized = true;
-		}
+	 	} catch (e) {
+	 		console.log(e);
+	 	}
 	});
 };
 
