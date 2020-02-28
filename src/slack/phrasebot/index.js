@@ -1,6 +1,7 @@
 const slackKit = require('../slack-kit');
 const commands = require('./commands');
 const utils = require('../../utils');
+const phrases = require('../flows/phrases');
 
 class PhraseBot extends slackKit.SlackBotInstance {
 	constructor(token) {
@@ -37,14 +38,11 @@ class PhraseBot extends slackKit.SlackBotInstance {
 				}
 			}
 		}
+
 		// no command match; check for generic trigger
-		const triggerMatch = text.trim().match(new RegExp(`(${this.commandTrigger}|${this.botUserStr})`, 'i'));
-		if (triggerMatch && this.phrasesActive) {
-			// send a random phrase
-			this.send({
-				text: utils.randomValue(this.slackBot.phrases),
-				channel,
-			});
+		const success = await phrases({ instance: this, text, messageEvent });
+		if (success) {
+			return;
 		}
 	};
 }
