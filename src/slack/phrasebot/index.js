@@ -21,8 +21,7 @@ class PhraseBot extends slackKit.SlackBotInstance {
 			return;
 		}
 
-		const botUserStr = `<@${botUserId}>`;
-		const commandRegex = new RegExp(`^(${this.commandTrigger}|${botUserStr}),?[ ]+(.*)$`, 'i');
+		const commandRegex = slackKit.makeCommandRegex(this);
 		const commandMatch = text.trim().match(commandRegex);
 		// command is the portion of text after the trigger (after 'bot', for example)
 		// this assumes commandTrigger is of the format (x|y|z); extra parens affect the match position
@@ -39,7 +38,7 @@ class PhraseBot extends slackKit.SlackBotInstance {
 			}
 		}
 		// no command match; check for generic trigger
-		const triggerMatch = text.trim().match(new RegExp(`(${this.commandTrigger}|${botUserStr})`, 'i'));
+		const triggerMatch = text.trim().match(new RegExp(`(${this.commandTrigger}|${this.botUserStr})`, 'i'));
 		if (triggerMatch && this.phrasesActive) {
 			// send a random phrase
 			this.send({

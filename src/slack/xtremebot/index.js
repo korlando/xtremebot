@@ -17,7 +17,7 @@ class WelcomeBot extends slackKit.SlackBotInstance {
 		// ignore content between double parens
 		const readableText = text.trim().replace(/\(\(.*\)\)/gi, '');
 
-		const commandRegex = new RegExp(`^(${this.commandTrigger}|<@${botUserId}>),?[ ]+(.*)$`, 'i');
+		const commandRegex = slackKit.makeCommandRegex(this);
 		const commandMatch = readableText.match(commandRegex);
 		// command is the portion of text after the trigger (after 'bot', for example)
 		const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
@@ -51,7 +51,7 @@ const instances = [
 ];
 
 module.exports = {
-	name: 'welcomebot',
+	name: 'xtremebot',
 	slackEventHandler: async (slackEvent) => {
 		await slackKit.slackEventHandler(slackEvent, instances);
 	},

@@ -1,4 +1,4 @@
 module.exports = [
-	require('./welcomebot'),
+	require('./xtremebot'),
 	require('./phrasebot'),
 ];

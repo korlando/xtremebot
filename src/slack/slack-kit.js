@@ -31,6 +31,7 @@ class SlackBotInstance {
 			const { botId, userId, teamId } = authRes;
 			this.botUserId = userId;
 			this.botTeamId = teamId;
+			this.botUserStr = `<@${userId}>`;
 			const botRes = await SlackBot.find({ botId, userId, teamId }).limit(1);
 			let slackBot;
 			if (!botRes.length) {
@@ -95,7 +96,11 @@ const slackEventHandler = async (slackEvent, instances) => {
 	}
 };
 
+const makeCommandRegex = (instance) =>
+	new RegExp(`^(${instance.commandTrigger}|${instance.botUserStr}),?[ ]+(.*)$`, 'i');
+
 module.exports = {
 	SlackBotInstance,
 	slackEventHandler,
+	makeCommandRegex,
 };
