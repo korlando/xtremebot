@@ -11,11 +11,11 @@ class WelcomeBot extends slackKit.SlackBotInstance {
 		const { channel, text } = messageEvent;
 		const { botUserId } = this;
 
-	 	if (typeof text !== 'string') {
-	 		return;
-	 	}
-	 	// ignore content between double parens
-	 	const readableText = text.trim().replace(/\(\(.*\)\)/gi, '');
+		if (typeof text !== 'string') {
+			return;
+		}
+		// ignore content between double parens
+		const readableText = text.trim().replace(/\(\(.*\)\)/gi, '');
 
 		const commandRegex = new RegExp(`^(${this.commandTrigger}|<@${botUserId}>),?[ ]+(.*)$`, 'i');
 		const commandMatch = readableText.match(commandRegex);
@@ -23,19 +23,13 @@ class WelcomeBot extends slackKit.SlackBotInstance {
 		const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
 
 		if (commandText) {
-		  for (let i = 0; i < commands.length; i++) {
-		    const { cmd, regex } = commands[i];
-		    const match = commandText.match(regex);
-		    if (match) {
-		      return cmd({
-		      	send: this.send,
-		      	instance: this,
-		      	messageEvent,
-		      	commandTrigger: this.commandTrigger,
-		      	match,
-		      });
-		    }
-		  }
+			for (let i = 0; i < commands.length; i++) {
+				const { cmd, regex } = commands[i];
+				const match = commandText.match(regex);
+				if (match) {
+					return cmd({ instance: this, messageEvent, match });
+				}
+			}
 		}
 
 		if (text.trim().toLowerCase() === 'welcome') {

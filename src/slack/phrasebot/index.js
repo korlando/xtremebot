@@ -17,11 +17,11 @@ class PhraseBot extends slackKit.SlackBotInstance {
 		if (!this.whitelistedUsers.includes(user)) {
 			return;
 		}
-	 	if (typeof text !== 'string') {
-	 		return;
-	 	}
+		if (typeof text !== 'string') {
+			return;
+		}
 
-	 	const botUserStr = `<@${botUserId}>`;
+		const botUserStr = `<@${botUserId}>`;
 		const commandRegex = new RegExp(`^(${this.commandTrigger}|${botUserStr}),?[ ]+(.*)$`, 'i');
 		const commandMatch = text.trim().match(commandRegex);
 		// command is the portion of text after the trigger (after 'bot', for example)
@@ -29,20 +29,14 @@ class PhraseBot extends slackKit.SlackBotInstance {
 		const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
 
 		if (commandText) {
-		  for (let i = 0; i < commands.length; i++) {
-		    const { cmd, regex } = commands[i];
-		    const match = commandText.match(regex);
-		    if (match) {
-		      cmd({
-		      	send: this.send,
-		      	instance: this,
-		      	messageEvent,
-		      	commandTrigger: this.commandTrigger,
-		      	match,
-		      });
-		      return;
-		    }
-		  }
+			for (let i = 0; i < commands.length; i++) {
+				const { cmd, regex } = commands[i];
+				const match = commandText.match(regex);
+				if (match) {
+					cmd({ instance: this, messageEvent, match });
+					return;
+				}
+			}
 		}
 		// no command match; check for generic trigger
 		const triggerMatch = text.trim().match(new RegExp(`(${this.commandTrigger}|${botUserStr})`, 'i'));

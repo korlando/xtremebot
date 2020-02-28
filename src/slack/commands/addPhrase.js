@@ -1,10 +1,10 @@
 const { SlackBot } = require('../../db');
 
-const cmd = async ({ send, instance, messageEvent, match }) => {
+const cmd = async ({ instance, messageEvent, match }) => {
 	const phrase = ((Array.isArray(match) && match[2]) || "").trim();
 	const { channel } = messageEvent;
 	if (!phrase || instance.slackBot.phrases.includes(phrase)) {
-		send({
+		instance.send({
 			text: 'Phrase already exists.',
 			channel,
 		});
@@ -14,19 +14,19 @@ const cmd = async ({ send, instance, messageEvent, match }) => {
 	try {
 		const results = await SlackBot.find({ _id: instance.slackBot._id }).limit(1);
 		if (!results.length) {
-			throw new Error('Error looking up bot.');
+			throw new Error('Bot not found.');
 		}
 		const bot = results[0];
 		bot.phrases.push(phrase);
 		await bot.save();
 		instance.slackBot = JSON.parse(JSON.stringify(bot));
-		send({
+		instance.send({
 			text: 'Success!',
 			channel,
 		});
 	} catch (e) {
 		console.log(e);
-		send({
+		instance.send({
 			text: 'Error saving phrase.',
 			channel,
 		});
@@ -34,6 +34,6 @@ const cmd = async ({ send, instance, messageEvent, match }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^add[ ]+(phrase|saying)[ ]+(.+)$/i,
+	cmd,
+	regex: /^add[ ]+(phrase|saying)[ ]+(.+)$/i,
 };

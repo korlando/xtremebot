@@ -1,11 +1,11 @@
 const { SlackBot } = require('../../db');
 
-const cmd = async ({ send, instance, messageEvent }) => {
+const cmd = async ({ instance, messageEvent }) => {
 	const { channel } = messageEvent;
 	const { phrases } = instance.slackBot;
 
 	if (!phrases.length) {
-		send({
+		instance.send({
 			text: 'No phrases.',
 			channel,
 		});
@@ -18,7 +18,7 @@ const cmd = async ({ send, instance, messageEvent }) => {
 	});
 	text += '```';
 
-	send({
+	instance.send({
 		text,
 		channel,
 	});

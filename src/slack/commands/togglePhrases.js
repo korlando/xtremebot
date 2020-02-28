@@ -1,6 +1,6 @@
 const { SlackBot } = require('../../db');
 
-const cmd = async ({ send, instance, messageEvent, match }) => {
+const cmd = async ({ instance, messageEvent, match }) => {
 	const state = ((Array.isArray(match) && match[2]) || "").trim().toLowerCase();
 	const { channel } = messageEvent;
 
@@ -12,14 +12,14 @@ const cmd = async ({ send, instance, messageEvent, match }) => {
 		stateText = 'on';
 		instance.phrasesActive = true;
 	} else  {
-		send({
+		instance.send({
 			text: 'Unrecognized input.',
 			channel,
 		});
 		return;
 	}
 
-	send({
+	instance.send({
 		text: `Toggling phrases ${stateText}.`,
 		channel,
 	});

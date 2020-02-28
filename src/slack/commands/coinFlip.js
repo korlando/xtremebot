@@ -2,9 +2,9 @@ const utils = require('../../utils');
 
 const options = ['heads', 'tails'];
 
-const cmd = ({ send, messageEvent }) => {
+const cmd = ({ instance, messageEvent }) => {
 	const { channel } = messageEvent;
-	send({
+	instance.send({
 		text: utils.randomValue(options),
 		channel,
 	});

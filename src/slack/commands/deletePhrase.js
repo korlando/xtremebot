@@ -1,6 +1,6 @@
 const { SlackBot } = require('../../db');
 
-const cmd = async ({ send, instance, messageEvent, match }) => {
+const cmd = async ({ instance, messageEvent, match }) => {
 	const phrase = ((Array.isArray(match) && match[3]) || "").trim();
 	const { channel } = messageEvent;
 
@@ -13,13 +13,13 @@ const cmd = async ({ send, instance, messageEvent, match }) => {
 		bot.phrases = bot.phrases.filter(p => p !== phrase);
 		await bot.save();
 		instance.slackBot = JSON.parse(JSON.stringify(bot));
-		send({
+		instance.send({
 			text: 'Success!',
 			channel,
 		});
 	} catch (e) {
 		console.log(e);
-		send({
+		instance.send({
 			text: 'Error deleting phrase.',
 			channel,
 		});
