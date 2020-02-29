@@ -1,6 +1,6 @@
 const slackKit = require('../slack-kit');
 const commands = require('./commands');
-const phrases = require('../flows/phrases');
+const flows = require('./flows');
 
 class WelcomeBot extends slackKit.SlackBotInstance {
 	constructor(token) {
@@ -12,9 +12,6 @@ class WelcomeBot extends slackKit.SlackBotInstance {
 		const { channel, text } = messageEvent;
 		const { botUserId } = this;
 
-		if (typeof text !== 'string') {
-			return;
-		}
 		// ignore content between double parens
 		const readableText = text.trim().replace(/\(\(.*\)\)/gi, '');
 
@@ -34,10 +31,11 @@ class WelcomeBot extends slackKit.SlackBotInstance {
 			}
 		}
 
-		// no command match; check for generic trigger
-		const success = await phrases({ instance: this, text: readableText, messageEvent });
-		if (success) {
-			return;
+		for (let i = 0; i < flows.length; i++) {
+			const success = await flows[i]({ instance: this, text: readableText, messageEvent });
+			if (success) {
+				return;
+			}
 		}
 
 		if (readableText.toLowerCase() === 'welcome') {

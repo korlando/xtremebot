@@ -4,4 +4,5 @@ module.exports = {
 		const randomIndex = Math.floor(Math.random() * numOptions);
 		return arr[randomIndex];
 	},
+	escapeSpecialRegexChars: str => str.replace(/[-.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:]/gi, x => `\\${x}`),
 };

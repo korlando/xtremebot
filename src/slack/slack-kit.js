@@ -1,7 +1,8 @@
 const { WebClient } = require('@slack/web-api');
 
+const utils = require('../utils');
 const methods = require('./methods');
-const { SlackBot } = require('../db');
+const { SlackBot, ResponseTrigger } = require('../db');
 
 const EVENTS = {
 	MESSAGE: 'message',
@@ -17,6 +18,7 @@ class SlackBotInstance {
 		this.botTeamId = '';
 		this.botUserId = '';
 		this.commandTrigger = '(bot)';
+		this.customTriggerMap = {};
 
 		this.initialize();
 	}
@@ -47,10 +49,24 @@ class SlackBotInstance {
 			}
 			this.slackBot = slackBot;
 			this.phrasesActive = true;
+
+			// initialize the custom triggers
+			const triggerRes = await ResponseTrigger.find({ slackBotId: botId });
+			this.customTriggerList = JSON.parse(JSON.stringify(triggerRes));
+			this.customTriggerList.forEach((r) => {
+				const { trigger, response } = r;
+				if (this.customTriggerMap[trigger]) {
+					this.customTriggerMap[trigger].push(r);
+				} else {
+					this.customTriggerMap[trigger] = [r];
+				}
+			});
+			this.buildCustomTriggerRegex();
+
 			this.initialized = true;
-	 	} catch (e) {
-	 		console.log(e);
-	 	}
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	handleMessageEvent = async (messageEvent) => {};
@@ -62,11 +78,37 @@ class SlackBotInstance {
 			console.log(e);
 		}
 	};
+
+	addCustomTrigger = async (responseTrigger) => {
+		const { trigger, response } = responseTrigger;
+		const list = this.customTriggerMap[trigger];
+		const triggerExists = Array.isArray(list);
+		if (triggerExists) {
+			list.push(responseTrigger);
+		} else {
+			this.customTriggerMap[trigger] = [responseTrigger];
+		}
+		this.buildCustomTriggerRegex();
+	};
+
+	buildCustomTriggerRegex = () => {
+		const filtered = [];
+		Object.keys(this.customTriggerMap).forEach((trigger) => {
+			if (!trigger.match(new RegExp(`^${this.commandTrigger}$`, 'i'))) {
+				filtered.push(utils.escapeSpecialRegexChars(trigger));
+			}
+		});
+		this.customTriggerRegex = new RegExp(`(^|.+[ ]+|[^a-z0-9]+)(${filtered.join('|')})($|[ ]+.+|[^a-z0-9]+)`, 'i');
+	};
 }
 
 const handleMessageEvent = async (slackEvent, instances) => {
 	const { event, teamId } = slackEvent;
 	const { text, channel, user } = event;
+
+	if (typeof text !== 'string') {
+		return;
+	}
 
 	// find the right instance according to the team ID
 	for (let i = 0; i < instances.length; i++) {

@@ -6,13 +6,12 @@ module.exports = async ({ text, messageEvent, instance }) => {
 	if (!phrases.length) {
 		return false;
 	}
-	const { channel } = messageEvent;
 	const triggerMatch = text.trim().match(new RegExp(`(${instance.commandTrigger}|${instance.botUserStr})`, 'i'));
 	if (triggerMatch && instance.phrasesActive) {
 		// send a random phrase
 		await instance.send({
 			text: utils.randomValue(phrases),
-			channel,
+			channel: messageEvent.channel,
 		});
 		return true;
 	}

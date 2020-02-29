@@ -18,9 +18,6 @@ class PhraseBot extends slackKit.SlackBotInstance {
 		if (!this.whitelistedUsers.includes(user)) {
 			return;
 		}
-		if (typeof text !== 'string') {
-			return;
-		}
 
 		const commandRegex = slackKit.makeCommandRegex(this);
 		const commandMatch = text.trim().match(commandRegex);

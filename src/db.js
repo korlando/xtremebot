@@ -9,7 +9,9 @@ if (!process.env[NAME]) {
 const conn = mongoose.createConnection(process.env[NAME]);
 
 const SlackBot = require('./schemas/SlackBot')(conn);
+const ResponseTrigger = require('./schemas/ResponseTrigger')(conn);
 
 module.exports = {
 	SlackBot,
+	ResponseTrigger,
 };

@@ -4,4 +4,5 @@ module.exports = [
 	require('../commands/listPhrases'),
 	require('../commands/togglePhrases'),
 	require('../commands/coinFlip'),
+	require('../commands/addTrigger'),
 ];
