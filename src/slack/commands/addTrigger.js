@@ -1,6 +1,6 @@
 const { ResponseTrigger } = require('../../db');
 
-const cmd = async ({ instance, messageEvent, state, match, commandTrigger, senderId }) => {
+const cmd = async ({ instance, messageEvent, match }) => {
 	const { channel } = messageEvent;
 	const customTrigger = match[2].trim().toLowerCase();
 	const customResponse = match[4].trim();

@@ -6,13 +6,13 @@ module.exports = async ({ text, messageEvent, instance }) => {
 	if (!customMatch) {
 		return false;
 	}
-	const matchedTrigger = customMatch[2].toLowerCase();
-	const matchedResponses = instance.customTriggerMap[matchedTrigger];
-	if (!Array.isArray(matchedResponses) || !matchedResponses.length) {
+	const trigger = customMatch[2].toLowerCase();
+	const responses = instance.customTriggerMap[trigger];
+	if (!Array.isArray(responses) || !responses.length) {
 		return false;
 	}
 	await instance.send({
-		text: utils.randomValue(matchedResponses).response,
+		text: utils.randomValue(responses).response,
 		channel: messageEvent.channel,
 	});
 	return true;

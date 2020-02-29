@@ -79,16 +79,27 @@ class SlackBotInstance {
 		}
 	};
 
-	addCustomTrigger = async (responseTrigger) => {
+	addCustomTrigger = (responseTrigger) => {
 		const { trigger, response } = responseTrigger;
 		const list = this.customTriggerMap[trigger];
-		const triggerExists = Array.isArray(list);
-		if (triggerExists) {
+		if (Array.isArray(list)) {
 			list.push(responseTrigger);
 		} else {
 			this.customTriggerMap[trigger] = [responseTrigger];
 		}
 		this.buildCustomTriggerRegex();
+	};
+
+	deleteCustomTrigger = (responseTrigger) => {
+		const { trigger, _id } = responseTrigger;
+		const list = this.customTriggerMap[trigger];
+		if (Array.isArray(list)) {
+			this.customTriggerMap[trigger] = list.filter(rt => rt._id !== _id);
+			if (!this.customTriggerMap[trigger].length) {
+				delete this.customTriggerMap[trigger];
+			}
+			this.buildCustomTriggerRegex();
+		}
 	};
 
 	buildCustomTriggerRegex = () => {

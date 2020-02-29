@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 module.exports = {
 	randomValue: (arr) => {
 		const numOptions = arr.length;
@@ -5,4 +7,5 @@ module.exports = {
 		return arr[randomIndex];
 	},
 	escapeSpecialRegexChars: str => str.replace(/[-.\\\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:]/gi, x => `\\${x}`),
+	validObjectId: x => mongoose.Types.ObjectId.isValid(x),
 };
