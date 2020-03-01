@@ -4,10 +4,10 @@ const cmd = async ({ instance, messageEvent }) => {
 	const triggers = Object.keys(m);
 	let text = '';
 	triggers.forEach((trigger, i) => {
-		text += `${trigger}\n`;
+		text += `*${trigger}*\n`;
 		const responses = m[trigger];
 		responses.forEach((rt) => {
-			text += `> ${rt.response} (*${rt._id}*)\n`;
+			text += `> *${rt.response}* (${rt._id})\n`;
 		});
 		if (i < triggers.length - 1) {
 			text += '\n';
