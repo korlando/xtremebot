@@ -40,4 +40,17 @@ module.exports = {
 		botId: b.bot_id,
 		responseMetadata: b.response_metadata,
 	}),
+
+	transformBotInfo: (b) => ({
+		ok: b.ok,
+		bot: {
+			id: b.bot.id,
+			deleted: b.bot.deleted,
+			name: b.bot.name,
+			updated: b.bot.updated,
+			appId: b.bot.app_id,
+			userId: b.bot.user_id,
+			icons: b.icons,
+		},
+	}),
 };

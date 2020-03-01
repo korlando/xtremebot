@@ -1,4 +1,7 @@
-const { transformSlackAuthTest } = require('../transforms');
+const {
+	transformBotInfo,
+	transformSlackAuthTest,
+} = require('../transforms');
 
 module.exports = {
 	// https://api.slack.com/methods/chat.postMessage
@@ -6,17 +9,17 @@ module.exports = {
 		await webClient.chat.postMessage({ channel, text });
 	},
 
-	// https://api.slack.com/methods/channels.list
-	listChannels: async (webClient) => {
-	  const res = await webClient.channels.list();
+	// https://api.slack.com/methods/users.conversations
+	listConversations: async (webClient) => {
+	  const res = await webClient.users.conversations();
 	  return res;
 	},
 
 	// https://api.slack.com/methods/bots.info
 	getBotInfo: async (webClient, config) => {
 		const { botId } = (config || {});
-		const res = await webClient.bots.info({ botId });
-		return res;
+		const res = await webClient.bots.info({ bot: botId });
+		return transformBotInfo(res);
 	},
 
 	// https://api.slack.com/methods/users.list
