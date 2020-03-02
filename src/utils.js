@@ -12,4 +12,6 @@ module.exports = {
 	validObjectId: x => mongoose.Types.ObjectId.isValid(x),
 
 	isFunc: x => typeof x === 'function',
+
+	isString: x => typeof x === 'string',
 };

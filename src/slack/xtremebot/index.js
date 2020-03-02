@@ -1,10 +1,10 @@
-const slackKit = require('../slack-kit');
+const { SlackBotInstance, slackEventHandler } = require('../slack-kit');
 const commands = require('./commands');
 const flows = require('./flows');
 const ignoreDoubleParensMiddleware = require('../messageMiddlewares/ignoreDoubleParensMiddleware');
 const whitelistUsersMiddleware = require('../messageMiddlewares/whitelistUsersMiddleware');
 
-class XtremeBot extends slackKit.SlackBotInstance {
+class XtremeBot extends SlackBotInstance {
 	constructor(token, config = {}) {
 		const { commandTrigger, messageMiddleware } = config;
 		super(token, {
@@ -68,6 +68,6 @@ const instances = [
 module.exports = {
 	name: 'xtremebot',
 	slackEventHandler: async (slackEvent) => {
-		await slackKit.slackEventHandler(slackEvent, instances);
+		await slackEventHandler(slackEvent, instances);
 	},
 };;
