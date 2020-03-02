@@ -2,6 +2,7 @@ const utils = require('../utils');
 
 const START = '__START__';
 const END = '__END__';
+const NULL = '__NULL__';
 
 const punctuationRegex = /[\.,:;!\+&]/gi;
 
@@ -23,7 +24,7 @@ class FrequencyTable {
 			.toLowerCase()
 			.replace(punctuationRegex, x => ` ${x} `)
 			.split(/[ ]+/)
-			.filter(t => !!t);
+			.filter(t => !!t && t !== START && t !== END && t !== NULL);
 		if (!tokens.length) {
 			return [];
 		}
@@ -32,7 +33,17 @@ class FrequencyTable {
 		return tokens;
 	};
 
-	updateTable = (tokens) => {
+	updateTable = (originalTokens) => {
+		const tokens = [...originalTokens];
+		// handle the case where prediction length exceeds # tokens (excluding __END__)
+		if (tokens.length - 1 < this.predictionLength) {
+			const numInserts = this.predictionLength - (tokens.length - 1);
+			let i = 0;
+			while (i < numInserts) {
+				tokens.splice(tokens.length - 1, 0, NULL);
+				i += 1;
+			}
+		}
 		for (let i = 0; i < tokens.length; i++) {
 			const entryTokens = tokens.slice(i, i + this.predictionLength);
 			const firstToken = entryTokens[0];
@@ -83,8 +94,7 @@ class FrequencyTable {
 		this.updateTable(tokens);
 	};
 
-	generateMessage = () => {
-		// pick a starter
+	randomStarterEntry = () => {
 		const starterCutoff = Math.floor(Math.random() * this.numStarters);
 		const starterOptions = Object.keys(this.starterPhrases);
 		let index = 0;
@@ -95,6 +105,12 @@ class FrequencyTable {
 			count += this.starterPhrases[starter];
 			index += 1;
 		}
+		return starter;
+	};
+
+	generateMessage = () => {
+		// pick a starter
+		const starter = this.randomStarterEntry();
 		const words = starter.split(' ');
 		let curEntry = starter;
 		while (true) {
@@ -126,7 +142,9 @@ class FrequencyTable {
 		if (words[words.length - 1] === END) {
 			words.splice(words.length - 1, 1);
 		}
-		return words.reduce((str, w, i) => (w.match(punctuationRegex) || i === 0 ? str + w : `${str} ${w}`), '');
+		return words
+			.filter(w => w !== NULL)
+			.reduce((str, w, i) => (w.match(punctuationRegex) || i === 0 ? str + w : `${str} ${w}`), '');
 	};
 }
 
