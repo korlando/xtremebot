@@ -8,4 +8,5 @@ module.exports = [
 	require('../commands/deleteTrigger'),
 	require('../commands/listTriggers'),
 	require('../commands/toggleMarkov'),
+	require('../commands/status'),
 ];
