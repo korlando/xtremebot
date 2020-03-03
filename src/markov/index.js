@@ -113,6 +113,9 @@ class FrequencyTable {
 
 	randomStarterEntry = () => {
 		const keys = Object.keys(this.table);
+		if (!keys.length) {
+			return '';
+		}
 		let numStarters = 0;
 		const starterFreqs = {};
 		keys.forEach((k) => {
@@ -154,6 +157,9 @@ class FrequencyTable {
 	generateMessage = () => {
 		// pick a starter
 		const starter = this.randomStarterEntry();
+		if (!starter) {
+			return '';
+		}
 		const words = starter.split(' ');
 		let curEntry = starter;
 		while (true) {

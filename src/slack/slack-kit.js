@@ -113,6 +113,11 @@ class SlackBotInstance {
 			this.markovActive = true;
 
 			this.initialized = true;
+
+			// save the markov chain (if applicable) every 10 minutes
+			this.saveMarkovChainTimer = setInterval(() => {
+				this.saveActiveMarkovChain();
+			}, 10 * 60 * 1000);
 		} catch (e) {
 			console.log(e);
 		}
@@ -165,12 +170,30 @@ class SlackBotInstance {
 		Object.keys(this.markovChains).length > 0 &&
 		Boolean(this.markovChains[this.slackBot.activeMarkovChainId]);
 
+	getActiveMarkovChain = () => this.markovChains[this.slackBot.activeMarkovChainId];
+
 	generateMarkovChainMessage = () => {
-		const id = this.slackBot.activeMarkovChainId;
 		if (this.canUseMarkovChain()) {
-			return this.markovChains[id].frequencyTable.generateMessage();
+			return this.getActiveMarkovChain().frequencyTable.generateMessage();
 		}
 		return '';
+	};
+
+	saveActiveMarkovChain = async () => {
+		if (this.canUseMarkovChain()) {
+			const m = this.getActiveMarkovChain();
+			const markovChainRes = await MarkovChain.find({ _id: m._id }).limit(1);
+			if (!markovChainRes.length) {
+				return;
+			}
+			const markovChain = markovChainRes[0];
+			markovChain.frequencyTable = m.frequencyTable.dumpTable();
+			try {
+				await markovChain.save();
+			} catch (e) {
+				console.log(e);
+			}
+		}
 	};
 }
 
