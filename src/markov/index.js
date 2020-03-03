@@ -7,12 +7,13 @@ const NULL = '__NULL__';
 const punctuationRegex = /[\.,:;!\+&]/gi;
 
 class FrequencyTable {
-	constructor(predictionLength = 2) {
+	constructor(predictionLength = 2, dump) {
 		this.predictionLength = Math.round(predictionLength);
 		this.table = {};
 		this.wordFrequencies = {};
-		this.numStarters = 0;
-		this.starterPhrases = {};
+		if (dump) {
+			this.parseDump(dump);
+		}
 	}
 
 	parseText = (text) => {
@@ -22,8 +23,11 @@ class FrequencyTable {
 		const tokens = text
 			.trim()
 			.toLowerCase()
+			.replace('&gt;', '>')
+			.replace('&lt;', '<')
+			.replace(/\<https?\:\/\/[^ ]+\>/gi, '')
 			.replace(punctuationRegex, x => ` ${x} `)
-			.split(/[ ]+/)
+			.split(/[ \t]+/)
 			.filter(t => !!t && t !== START && t !== END && t !== NULL);
 		if (!tokens.length) {
 			return [];
@@ -31,6 +35,17 @@ class FrequencyTable {
 		tokens.unshift(START);
 		tokens.push(END);
 		return tokens;
+	};
+
+	parseDump = (dump) => {
+		try {
+			const parsed = JSON.parse(dump);
+			this.predictionLength = parsed.predictionLength;
+			this.table = parsed.frequencyTable;
+			this.wordFrequencies = parsed.wordFrequencies;
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	updateTable = (originalTokens) => {
@@ -56,17 +71,15 @@ class FrequencyTable {
 				this.wordFrequencies[firstToken] = 1;
 			}
 
-			if (firstToken === START) {
-				this.numStarters += 1;
-				if (this.starterPhrases[entry]) {
-					this.starterPhrases[entry] += 1;
-				} else {
-					this.starterPhrases[entry] = 1;
-				}
-			}
-
 			if (i < tokens.length - this.predictionLength) {
-				if (this.table[entry]) {
+				if (entry === 'constructor') {
+					// weird edge case
+					continue;
+				}
+				if (
+					this.table[entry] &&
+					(entry !== 'constructor' || (entry === 'constructor' && typeof this.table[entry] !== 'function'))
+				) {
 					this.table[entry].total += 1;
 					if (this.table[entry].tokens[nextToken]) {
 						this.table[entry].tokens[nextToken].frequency += 1;
@@ -86,7 +99,11 @@ class FrequencyTable {
 	};
 
 	dumpTable = () => {
-		return JSON.stringify(this.table);
+		return JSON.stringify({
+			predictionLength: this.predictionLength,
+			frequencyTable: this.table,
+			wordFrequencies: this.wordFrequencies,
+		});
 	};
 
 	handleInput = (text) => {
@@ -95,17 +112,43 @@ class FrequencyTable {
 	};
 
 	randomStarterEntry = () => {
-		const starterCutoff = Math.floor(Math.random() * this.numStarters);
-		const starterOptions = Object.keys(this.starterPhrases);
-		let index = 0;
-		let count = 0;
-		let starter = starterOptions[index];
-		while (count <= starterCutoff) {
-			starter = starterOptions[index];
-			count += this.starterPhrases[starter];
-			index += 1;
+		const keys = Object.keys(this.table);
+		let numStarters = 0;
+		const starterFreqs = {};
+		keys.forEach((k) => {
+			if (k.indexOf(START) === 0) {
+				const m = this.table[k];
+				numStarters += m.total;
+				starterFreqs[k] = m.total;
+			}
+		});
+		const r = Math.floor(Math.random() * numStarters);
+		const starters = Object.keys(starterFreqs);
+		let i = 0;
+		let freq = 0;
+		let starter = starters[i];
+		while (freq <= r) {
+			starter = starters[i];
+			freq += starterFreqs[starter];
+			i += 1;
 		}
 		return starter;
+	};
+
+	randomWordFromFreqMap = (freqMap) => {
+		// the set of possible next words
+		const { total, tokens } = freqMap;
+		const words = Object.keys(tokens);
+		const r = Math.floor(Math.random() * total);
+		let i = 0;
+		let freq = 0;
+		let w = words[i];
+		while (freq <= r) {
+			w = words[i];
+			freq += tokens[w].frequency;
+			i += 1;
+		}
+		return w;
 	};
 
 	generateMessage = () => {
@@ -114,19 +157,7 @@ class FrequencyTable {
 		const words = starter.split(' ');
 		let curEntry = starter;
 		while (true) {
-			// the set of possible next words
-			const totalOptions = this.table[curEntry].total;
-			const map = this.table[curEntry].tokens;
-			const options = Object.keys(map);
-			const cutoff = Math.floor(Math.random() * totalOptions);
-			let i = 0;
-			let c = 0;
-			let w = options[i];
-			while (c <= cutoff) {
-				w = options[i];
-				c += map[w].frequency;
-				i += 1;
-			}
+			const w = this.randomWordFromFreqMap(this.table[curEntry]);
 			words.push(w);
 			const curTokens = curEntry.split(' ');
 			curTokens.splice(0, 1);
