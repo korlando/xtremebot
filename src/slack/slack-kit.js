@@ -2,7 +2,12 @@ const { WebClient } = require('@slack/web-api');
 
 const utils = require('../utils');
 const methods = require('./methods');
-const { SlackBot, ResponseTrigger } = require('../db');
+const {
+	SlackBot,
+	ResponseTrigger,
+	MarkovChain,
+} = require('../db');
+const { FrequencyTable } = require('../markov');
 
 const EVENTS = {
 	MESSAGE: 'message',
@@ -57,16 +62,15 @@ class SlackBotInstance {
 			let slackBot;
 			if (!botRes.length) {
 				// bot doesn't exist yet, create it
-				bot = new SlackBot();
-				bot.botId = botId;
-				bot.userId = userId;
-				bot.teamId = teamId;
-				await bot.save();
-				slackBot = JSON.parse(JSON.stringify(bot));
+				slackBot = new SlackBot();
+				slackBot.botId = botId;
+				slackBot.userId = userId;
+				slackBot.teamId = teamId;
+				await slackBot.save();
 			} else {
-				slackBot = JSON.parse(JSON.stringify(botRes[0]));
+				slackBot = botRes[0];
 			}
-			this.slackBot = slackBot;
+			this.slackBot = JSON.parse(JSON.stringify(slackBot));
 			this.phrasesActive = true;
 
 			// initialize the custom triggers
@@ -81,6 +85,30 @@ class SlackBotInstance {
 				}
 			});
 			this.buildCustomTriggerRegex();
+
+			// initialize markov chains
+			this.markovChains = {};
+			const markovRes = await MarkovChain.find({ slackAppId: this.appId });
+			markovRes.forEach((m) => {
+				const _id = String(m._id);
+				this.markovChains[_id] = {
+					_id,
+					frequencyTable: new FrequencyTable(m.predictionLength, m.frequencyTable),
+					predictionLength: m.predictionLength,
+					slackTeamId: m.slackTeamId,
+					slackUserId: m.slackUserId,
+				};
+			});
+			if (
+				Object.keys(this.markovChains).length &&
+				(!this.slackBot.activeMarkovChainId || !this.markovChains[this.slackBot.activeMarkovChainId])
+			) {
+				// pick a default markov chain ID if a correct one isn't already selected
+				const id = Object.keys(this.markovChains)[0];
+				this.slackBot.activeMarkovChainId = id;
+				slackBot.activeMarkovChainId = id;
+				slackBot.save();
+			}
 
 			this.initialized = true;
 		} catch (e) {
@@ -129,6 +157,17 @@ class SlackBotInstance {
 			}
 		});
 		this.customTriggerRegex = new RegExp(`(^|.+[ ]+|[^a-z0-9]+)(${filtered.join('|')})($|[ ]+.+|[^a-z0-9]+)`, 'i');
+	};
+
+	canUseMarkovChain = () => Object.keys(this.markovChains).length > 0 &&
+		Boolean(this.markovChains[this.slackBot.activeMarkovChainId]);
+
+	generateMarkovChainMessage = () => {
+		const id = this.slackBot.activeMarkovChainId;
+		if (this.canUseMarkovChain()) {
+			return this.markovChains[id].frequencyTable.generateMessage();
+		}
+		return '';
 	};
 }
 

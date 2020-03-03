@@ -10,6 +10,7 @@ const SlackBotSchema = new mongoose.Schema({
 		default: Date.now,
 	},
 	phrases: [String],
+	activeMarkovChainId: String,
 }, {
 	autoIndex: false,
 });
