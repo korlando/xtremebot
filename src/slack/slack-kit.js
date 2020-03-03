@@ -26,6 +26,7 @@ class SlackBotInstance {
 		this.web = new WebClient(token);
 		this.initialized = false;
 		this.phrasesActive = false;
+		this.markovActive = false;
 		this.botTeamId = '';
 		this.botUserId = '';
 		this.botUserStr = '';
@@ -109,6 +110,7 @@ class SlackBotInstance {
 				slackBot.activeMarkovChainId = id;
 				slackBot.save();
 			}
+			this.markovActive = true;
 
 			this.initialized = true;
 		} catch (e) {
@@ -159,7 +161,8 @@ class SlackBotInstance {
 		this.customTriggerRegex = new RegExp(`(^|.+[ ]+|[^a-z0-9]+)(${filtered.join('|')})($|[ ]+.+|[^a-z0-9]+)`, 'i');
 	};
 
-	canUseMarkovChain = () => Object.keys(this.markovChains).length > 0 &&
+	canUseMarkovChain = () => this.markovActive &&
+		Object.keys(this.markovChains).length > 0 &&
 		Boolean(this.markovChains[this.slackBot.activeMarkovChainId]);
 
 	generateMarkovChainMessage = () => {

@@ -5,10 +5,10 @@ const cmd = async ({ instance, messageEvent, match }) => {
 	let stateText;
 	if (state === '0' || state === 'off') {
 		stateText = 'off';
-		instance.phrasesActive = false;
+		instance.markovActive = false;
 	} else if (state === '1' || state === 'on') {
 		stateText = 'on';
-		instance.phrasesActive = true;
+		instance.markovActive = true;
 	} else  {
 		instance.send({
 			text: 'Unrecognized input.',
@@ -18,12 +18,12 @@ const cmd = async ({ instance, messageEvent, match }) => {
 	}
 
 	instance.send({
-		text: `Toggling phrases ${stateText}.`,
+		text: `Toggling markov chains ${stateText}.`,
 		channel,
 	});
 };
 
 module.exports = {
   cmd,
-  regex: /^(phrases|sayings)[ ]+([^ ]+)$/i,
+  regex: /^(toggle[ ]+)?markov[ ]+([^ ]+)$/i,
 };
