@@ -116,7 +116,11 @@ class SlackBotInstance {
 
 			// save the markov chain (if applicable) every 10 minutes
 			this.saveMarkovChainTimer = setInterval(() => {
-				this.saveActiveMarkovChain();
+				try {
+					this.saveActiveMarkovChain();
+				} catch (e) {
+					console.log(e);
+				}
 			}, 10 * 60 * 1000);
 		} catch (e) {
 			console.log(e);
@@ -188,11 +192,7 @@ class SlackBotInstance {
 			}
 			const markovChain = markovChainRes[0];
 			markovChain.frequencyTable = m.frequencyTable.dumpTable();
-			try {
-				await markovChain.save();
-			} catch (e) {
-				console.log(e);
-			}
+			await markovChain.save();
 		}
 	};
 }
