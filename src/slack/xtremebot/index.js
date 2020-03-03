@@ -63,6 +63,10 @@ const instances = [
 			ignoreDoubleParensMiddleware(),
 		],
 	}),
+	new XtremeBot(process.env.SMITH_LIVE_XTREMEBOT_TOKEN, {
+		commandTrigger: process.env.SMITH_LIVE_XTREMEBOT_TRIGGER,
+		messageMiddleware: ignoreDoubleParensMiddleware(),
+	}),
 ];
 
 module.exports = {
