@@ -72,16 +72,17 @@ class FrequencyTable {
 			}
 
 			if (i < tokens.length - this.predictionLength) {
-				if (entry === 'constructor') {
-					// weird edge case
-					continue;
-				}
 				if (
 					this.table[entry] &&
+					// weird edge case
 					(entry !== 'constructor' || (entry === 'constructor' && typeof this.table[entry] !== 'function'))
 				) {
 					this.table[entry].total += 1;
-					if (this.table[entry].tokens[nextToken]) {
+					if (
+						this.table[entry].tokens[nextToken] &&
+						// another weird edge case
+						(nextToken !== 'constructor' || (nextToken === 'constructor' && typeof this.table[entry].tokens[nextToken] !== 'function'))
+					) {
 						this.table[entry].tokens[nextToken].frequency += 1;
 					} else {
 						this.table[entry].tokens[nextToken] = { frequency: 1 };
