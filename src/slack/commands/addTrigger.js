@@ -41,4 +41,6 @@ const cmd = async ({ instance, messageEvent, match }) => {
 module.exports = {
 	cmd,
 	regex: /^add[ ]+(trigger|response)[ ]+(.+)[ ]+(>>>|&gt;&gt;&gt;|->|-&gt;)[ ]+(.+)$/i,
+	name: 'Add Trigger/Response',
+	usage: 'bot add trigger [TRIGGER] -> [RESPONSE]',
 };

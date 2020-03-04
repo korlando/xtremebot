@@ -17,4 +17,6 @@ const cmd = async ({ instance, messageEvent }) => {
 module.exports = {
   cmd,
   regex: /^save markov$/i,
+  name: 'Save Markov Chain',
+  usage: 'bot save markov',
 };

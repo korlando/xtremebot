@@ -31,4 +31,6 @@ const cmd = async ({ instance, messageEvent }) => {
 module.exports = {
 	cmd,
 	regex: /^(list|ls)[ ]+(custom[ ]+)?(responses|triggers)([ ]+)?$/i,
+	name: 'List Triggers',
+	usage: 'bot list triggers',
 };

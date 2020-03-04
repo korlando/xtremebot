@@ -49,4 +49,6 @@ const cmd = async ({ instance, messageEvent, match }) => {
 module.exports = {
 	cmd,
 	regex: /^(delete|del|remove|rm)[ ]+(trigger|response)[ ]+(.*)$/i,
+	name: 'Delete Trigger',
+	usage: 'bot delete trigger [TRIGGER|trigger ID]',
 };

@@ -1,4 +1,5 @@
 module.exports = [
+	require('../commands/listCommands'),
 	require('../commands/status'),
 	require('../commands/addPhrase'),
 	require('../commands/deletePhrase'),

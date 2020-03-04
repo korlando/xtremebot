@@ -13,4 +13,6 @@ const cmd = async ({ instance, messageEvent }) => {
 module.exports = {
   cmd,
   regex: /^status([ ]+report)?$/i,
+  name: 'Status Report',
+  usage: 'bot status',
 };

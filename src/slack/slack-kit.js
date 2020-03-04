@@ -21,7 +21,7 @@ class SlackBotInstance {
 	 *  messageMiddleware: function to be run before handleMessageEvent
 	 */
 	constructor(token, config = {}) {
-		const { commandTrigger, messageMiddleware } = config;
+		const { commandTrigger, messageMiddleware, commands } = config;
 		this.token = token;
 		this.web = new WebClient(token);
 		this.initialized = false;
@@ -32,6 +32,7 @@ class SlackBotInstance {
 		this.botUserStr = '';
 		this.commandTrigger = commandTrigger || '(bot)';
 		this.customTriggerMap = {};
+		this.commands = commands || [];
 
 		if (utils.isFunc(messageMiddleware) || Array.isArray(messageMiddleware)) {
 			this.messageMiddleware = messageMiddleware;

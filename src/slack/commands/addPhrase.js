@@ -36,4 +36,6 @@ const cmd = async ({ instance, messageEvent, match }) => {
 module.exports = {
 	cmd,
 	regex: /^add[ ]+(phrase|saying)[ ]+(.+)$/i,
+	name: 'Add Phrase',
+	usage: 'bot add phrase [PHRASE]',
 };

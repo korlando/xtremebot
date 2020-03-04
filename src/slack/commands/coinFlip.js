@@ -13,4 +13,6 @@ const cmd = ({ instance, messageEvent }) => {
 module.exports = {
 	cmd,
 	regex: /^flip[ ]+(a[ ]+)?coin([ ]+.*)?$/i,
+	name: 'Flip a Coin',
+	usage: 'bot flip a coin',
 };

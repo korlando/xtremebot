@@ -10,6 +10,7 @@ class XtremeBot extends SlackBotInstance {
 		super(token, {
 			commandTrigger: commandTrigger || '(xtremebot|bot)',
 			messageMiddleware,
+			commands,
 		});
 	}
 
@@ -22,8 +23,8 @@ class XtremeBot extends SlackBotInstance {
 		const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
 
 		if (commandText) {
-			for (let i = 0; i < commands.length; i++) {
-				const { cmd, regex } = commands[i];
+			for (let i = 0; i < this.commands.length; i++) {
+				const { cmd, regex } = this.commands[i];
 				const match = commandText.match(regex);
 				if (match) {
 					cmd({ instance: this, messageEvent, match });
