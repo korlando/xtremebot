@@ -11,4 +11,6 @@ module.exports = [
 	require('../commands/listTriggers'),
 	require('../commands/toggleMarkov'),
 	require('../commands/saveMarkov'),
+	require('../commands/switchMarkov'),
+	require('../commands/listMarkov'),
 ];

@@ -3,7 +3,11 @@ const cmd = async ({ instance, messageEvent }) => {
 	// phrases
 	text += `Phrases: ${instance.phrasesActive ? '`ON`' : '`OFF`'}\n# Phrases: ${instance.slackBot.phrases.length}\n\n`;
 	// markov
-	text += `Markov Chain: ${instance.markovActive ? '`ON`' : '`OFF`'}`;
+	text += `Markov Chains: ${instance.markovActive ? '`ON`' : '`OFF`'}\n`;
+	if (instance.markovActive) {
+		const mc = instance.getActiveMarkovChain();
+		text += `Active Chain: ${mc.name} (\`${mc._id}\`)\n`;
+	}
 	instance.send({
 		text,
 		channel: messageEvent.channel,

@@ -1,7 +1,7 @@
 const { SlackBot } = require('../../db');
 
 const cmd = async ({ instance, messageEvent, match }) => {
-	const phrase = ((Array.isArray(match) && match[2]) || "").trim();
+	const phrase = ((Array.isArray(match) && match[2]) || '').trim();
 	const { channel } = messageEvent;
 	if (!phrase || instance.slackBot.phrases.includes(phrase)) {
 		instance.send({

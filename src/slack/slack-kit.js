@@ -95,6 +95,7 @@ class SlackBotInstance {
 				const _id = String(m._id);
 				this.markovChains[_id] = {
 					_id,
+					name: m.name || '(Unnamed)',
 					frequencyTable: new FrequencyTable(m.predictionLength, m.frequencyTable),
 					predictionLength: m.predictionLength,
 					slackTeamId: m.slackTeamId,
