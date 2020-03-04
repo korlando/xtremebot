@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const MarkovChainSchema = new mongoose.Schema({
+	name: String,
 	slackTeamId: String,
 	slackChannelId: String,
 	slackUserId: String,

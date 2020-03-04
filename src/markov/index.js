@@ -3,8 +3,11 @@ const utils = require('../utils');
 const START = '__START__';
 const END = '__END__';
 const NULL = '__NULL__';
+const COLON = '__COLON__';
 
 const punctuationRegex = /[\.,:;!\+&]/gi;
+const colonRegex = new RegExp(COLON, 'g');
+const exportWord = w => w.replace(colonRegex, ':');
 
 class FrequencyTable {
 	constructor(predictionLength = 2, dump) {
@@ -25,6 +28,8 @@ class FrequencyTable {
 			.toLowerCase()
 			.replace('&gt;', '>')
 			.replace('&lt;', '<')
+			// emojis
+			.replace(/:[-_a-z0-9]+:/gi, x => ` ${COLON + x.slice(1, x.length - 1) + COLON} `)
 			.replace(/\<https?\:\/\/[^ ]+\>/gi, '')
 			.replace(punctuationRegex, x => ` ${x} `)
 			.split(/[ \t]+/)
@@ -182,7 +187,7 @@ class FrequencyTable {
 		}
 		return words
 			.filter(w => w !== NULL)
-			.reduce((str, w, i) => (w.match(punctuationRegex) || i === 0 ? str + w : `${str} ${w}`), '');
+			.reduce((str, w, i) => (w.match(punctuationRegex) || i === 0 ? str + exportWord(w) : `${str} ${exportWord(w)}`), '');
 	};
 }
 
