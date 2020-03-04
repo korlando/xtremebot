@@ -185,7 +185,7 @@ class SlackBotInstance {
 	};
 
 	saveActiveMarkovChain = async () => {
-		if (this.canUseMarkovChain()) {
+		if (this.canUseMarkovChain() && !this.forceDisableUpdateMarkov) {
 			const m = this.getActiveMarkovChain();
 			const markovChainRes = await MarkovChain.find({ _id: m._id }).limit(1);
 			if (!markovChainRes.length) {
