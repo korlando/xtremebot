@@ -1,5 +1,5 @@
 const cmd = async ({ instance, messageEvent, match }) => {
-	const state = ((Array.isArray(match) && match[2]) || "").trim().toLowerCase();
+	const state = ((Array.isArray(match) && match[3]) || "").trim().toLowerCase();
 	const { channel } = messageEvent;
 
 	let stateText;
@@ -25,7 +25,7 @@ const cmd = async ({ instance, messageEvent, match }) => {
 
 module.exports = {
   cmd,
-  regex: /^(toggle[ ]+)?markov[ ]+([^ ]+)$/i,
+  regex: /^(toggle[ ]+)?markov[ ]+(chains?[ ]+)?([^ ]+)$/i,
   name: 'Toggle Markov Chains',
   usage: 'bot markov [on|off]',
 };

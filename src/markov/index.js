@@ -4,15 +4,19 @@ const START = '__START__';
 const END = '__END__';
 const NULL = '__NULL__';
 const COLON = '__COLON__';
+const PERIOD = '__PERIOD__';
+const PLUS = '__PLUS__';
 
 const punctuationRegex = /[\.,:;!\+&]/gi;
 const colonRegex = new RegExp(COLON, 'g');
+const periodRegex = new RegExp(PERIOD, 'g');
+const plusRegex = new RegExp(PLUS, 'g');
 const mentionRegex = /^<@[^ ]+>$/i;
 const exportWord = (w) => {
 	if (w.match(mentionRegex)) {
 		return w.toUpperCase();
 	}
-	return w.replace(colonRegex, ':');
+	return w.replace(colonRegex, ':').replace(periodRegex, '.').replace(plusRegex, '+');
 };
 
 class FrequencyTable {
@@ -36,7 +40,11 @@ class FrequencyTable {
 			.replace('&lt;', '<')
 			// emojis
 			.replace(/:[-_a-z0-9]+:/gi, x => ` ${COLON + x.slice(1, x.length - 1) + COLON} `)
-			.replace(/\<https?\:\/\/[^ ]+\>/gi, '')
+			// urls
+			.replace(
+				/\<https?\:\/\/[^ ]+\>/gi,
+				x => x.replace(/:/g, COLON).replace(/\./g, PERIOD).replace(/\+/g, PLUS),
+			)
 			.replace(punctuationRegex, x => ` ${x} `)
 			.split(/[ \t]+/)
 			.filter(t => !!t && t !== START && t !== END && t !== NULL);

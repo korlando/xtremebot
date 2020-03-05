@@ -89,19 +89,7 @@ class SlackBotInstance {
 			this.buildCustomTriggerRegex();
 
 			// initialize markov chains
-			this.markovChains = {};
-			const markovRes = await MarkovChain.find({ slackAppId: this.appId });
-			markovRes.forEach((m) => {
-				const _id = String(m._id);
-				this.markovChains[_id] = {
-					_id,
-					name: m.name || '(Unnamed)',
-					frequencyTable: new FrequencyTable(m.predictionLength, m.frequencyTable),
-					predictionLength: m.predictionLength,
-					slackTeamId: m.slackTeamId,
-					slackUserId: m.slackUserId,
-				};
-			});
+			await this.syncMarkovChains();
 			if (
 				Object.keys(this.markovChains).length &&
 				(!this.slackBot.activeMarkovChainId || !this.markovChains[this.slackBot.activeMarkovChainId])
@@ -196,6 +184,22 @@ class SlackBotInstance {
 			markovChain.frequencyTable = m.frequencyTable.dumpTable();
 			await markovChain.save();
 		}
+	};
+
+	syncMarkovChains = async () => {
+		const markovRes = await MarkovChain.find({ slackAppId: this.appId });
+		this.markovChains = {};
+		markovRes.forEach((m) => {
+			const _id = String(m._id);
+			this.markovChains[_id] = {
+				_id,
+				name: m.name || '(Unnamed)',
+				frequencyTable: new FrequencyTable(m.predictionLength, m.frequencyTable),
+				predictionLength: m.predictionLength,
+				slackTeamId: m.slackTeamId,
+				slackUserId: m.slackUserId,
+			};
+		});
 	};
 }
 

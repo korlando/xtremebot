@@ -1,14 +1,14 @@
 const cmd = async ({ instance, messageEvent }) => {
 	const { channel } = messageEvent;
 	try {
-		await instance.saveActiveMarkovChain();
+		await instance.syncMarkovChains();
 		instance.send({
-			text: 'Markov chain saved.',
+			text: 'Markov chains synced.',
 			channel,
 		});
 	} catch (e) {
 		instance.send({
-			text: `Error saving markov chain: ${e.message}`,
+			text: `Error syncing markov chains: ${e.message}`,
 			channel,
 		});
 	}
@@ -16,8 +16,8 @@ const cmd = async ({ instance, messageEvent }) => {
 
 module.exports = {
   cmd,
-  regex: /^save markov$/i,
-  name: 'Save Markov Chain',
-  usage: 'bot save markov',
+  regex: /^sync markov$/i,
+  name: 'Sync Markov Chains',
+  usage: 'bot sync markov',
   hidden: true,
 };
