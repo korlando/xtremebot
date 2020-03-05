@@ -14,4 +14,5 @@ module.exports = [
 	require('../commands/switchMarkov'),
 	require('../commands/listMarkov'),
 	require('../commands/define'),
+	require('../commands/acronym'),
 ];
