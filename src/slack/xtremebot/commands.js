@@ -13,4 +13,5 @@ module.exports = [
 	require('../commands/saveMarkov'),
 	require('../commands/switchMarkov'),
 	require('../commands/listMarkov'),
+	require('../commands/define'),
 ];

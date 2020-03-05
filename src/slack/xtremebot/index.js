@@ -6,7 +6,11 @@ const whitelistUsersMiddleware = require('../messageMiddlewares/whitelistUsersMi
 
 class XtremeBot extends SlackBotInstance {
 	constructor(token, config = {}) {
-		const { commandTrigger, messageMiddleware, forceDisableUpdateMarkov } = config;
+		const {
+			commandTrigger,
+			messageMiddleware,
+			forceDisableUpdateMarkov,
+		} = config;
 		super(token, {
 			commandTrigger: commandTrigger || '(xtremebot|bot)',
 			messageMiddleware,
