@@ -7,7 +7,13 @@ const COLON = '__COLON__';
 
 const punctuationRegex = /[\.,:;!\+&]/gi;
 const colonRegex = new RegExp(COLON, 'g');
-const exportWord = w => w.replace(colonRegex, ':');
+const mentionRegex = /^<@[^ ]+>$/i;
+const exportWord = (w) => {
+	if (w.match(mentionRegex)) {
+		return w.toUpperCase();
+	}
+	return w.replace(colonRegex, ':');
+};
 
 class FrequencyTable {
 	constructor(predictionLength = 2, dump) {
@@ -187,7 +193,11 @@ class FrequencyTable {
 		}
 		return words
 			.filter(w => w !== NULL)
-			.reduce((str, w, i) => (w.match(punctuationRegex) || i === 0 ? str + exportWord(w) : `${str} ${exportWord(w)}`), '');
+			.reduce((str, w, i) => (
+				w.match(punctuationRegex) || i === 0 || str.slice(str.length - 2, str.length) === '<!'
+					? str + exportWord(w)
+					: `${str} ${exportWord(w)}`
+			), '');
 	};
 }
 
