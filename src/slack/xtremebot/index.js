@@ -21,22 +21,6 @@ class XtremeBot extends SlackBotInstance {
 
 	handleMessageEvent = async (messageEvent) => {
 		const { channel, text } = messageEvent;
-		const { botUserId } = this;
-
-		const commandMatch = text.match(this.commandRegex);
-		// command is the portion of text after the trigger (after 'bot', for example)
-		const commandText = commandMatch && commandMatch[3] && commandMatch[3].trim();
-
-		if (commandText) {
-			for (let i = 0; i < this.commands.length; i++) {
-				const { cmd, regex } = this.commands[i];
-				const match = commandText.match(regex);
-				if (match) {
-					cmd({ instance: this, messageEvent, match });
-					return;
-				}
-			}
-		}
 
 		for (let i = 0; i < flows.length; i++) {
 			const success = await flows[i]({ instance: this, text, messageEvent });
