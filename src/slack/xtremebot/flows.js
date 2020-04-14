@@ -1,5 +1,6 @@
 // order matters for priority; flows are checked in order
 module.exports = [
+	require('../flows/checkin'),
 	require('../flows/commands'),
 	require('../flows/updateMarkov'),
 	require('../flows/customTriggers'),

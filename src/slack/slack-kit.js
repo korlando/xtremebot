@@ -6,6 +6,7 @@ const {
 	SlackBot,
 	ResponseTrigger,
 	MarkovChain,
+	User,
 } = require('../db');
 const { FrequencyTable } = require('../markov');
 
@@ -33,6 +34,7 @@ class SlackBotInstance {
 		this.commandTrigger = commandTrigger || '(bot)';
 		this.customTriggerMap = {};
 		this.commands = commands || [];
+		this.checkinTimers = {};
 
 		if (utils.isFunc(messageMiddleware) || Array.isArray(messageMiddleware)) {
 			this.messageMiddleware = messageMiddleware;
@@ -47,12 +49,14 @@ class SlackBotInstance {
 			const authRes = await methods.authTest(this.web);
 			if (!authRes.ok) {
 				console.log('Error getting auth info.');
+				console.log(authRes);
 				return;
 			}
 			const { botId, userId, teamId } = authRes;
 			const botInfoRes = await methods.getBotInfo(this.web, { botId });
 			if (!botInfoRes.ok) {
 				console.log('Error getting bot info.');
+				console.log(botInfoRes);
 				return;
 			}
 			this.appId = botInfoRes.bot.appId;
@@ -101,6 +105,30 @@ class SlackBotInstance {
 				slackBot.save();
 			}
 			this.markovActive = true;
+
+			// get users from this team
+			const usersListRes = await methods.getUsersList(this.web);
+			if (!usersListRes.ok) {
+				console.log('Error getting users.');
+				console.log(usersListRes);
+				return;
+			}
+			const usersRes = await User.find({ slackTeamId: this.botTeamId });
+			const users = [];
+			usersListRes.members.forEach(async (m) => {
+				// synchronize the list of users from slack with the ones in mongo
+				let user = usersRes.find(u => u.slackUserId === m.id);
+				if (!user) {
+					// create users as necessary
+					user = new User();
+					user.slackUserId = m.id;
+					user.slackTeamId = this.botTeamId;
+					await user.save();
+				}
+				users.push(JSON.parse(JSON.stringify(user)));
+			});
+			this.users = users;
+			this.slackUsers = usersListRes.members;
 
 			this.initialized = true;
 

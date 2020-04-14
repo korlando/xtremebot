@@ -1,6 +1,7 @@
 const {
 	transformBotInfo,
 	transformSlackAuthTest,
+	transformUsersList,
 } = require('../transforms');
 
 module.exports = {
@@ -25,7 +26,7 @@ module.exports = {
 	// https://api.slack.com/methods/users.list
 	getUsersList: async (webClient) => {
 		const res = await webClient.users.list();
-		return res;
+		return transformUsersList(res);
 	},
 
 	// https://api.slack.com/methods/users.identity

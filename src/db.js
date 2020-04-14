@@ -11,9 +11,11 @@ const conn = mongoose.createConnection(process.env[NAME]);
 const SlackBot = require('./schemas/SlackBot')(conn);
 const ResponseTrigger = require('./schemas/ResponseTrigger')(conn);
 const MarkovChain = require('./schemas/MarkovChain')(conn);
+const User = require('./schemas/User')(conn);
 
 module.exports = {
 	SlackBot,
 	ResponseTrigger,
 	MarkovChain,
+	User,
 };
