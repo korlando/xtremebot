@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const NAME = 'XTREMEBOT_MLAB_URL';
+const NAME = 'XTREMEBOT_MONGO_URL';
 
 if (!process.env[NAME]) {
   throw new Error(`Missing environment variable: ${NAME}`);
