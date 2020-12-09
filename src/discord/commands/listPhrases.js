@@ -1,11 +1,14 @@
-const cmd = async ({ instance, messageEvent }) => {
-	const { channel } = messageEvent;
-	const { phrases } = instance.slackBot;
+const cmd = async ({ instance, message }) => {
+	const guildId = instance.getGuildId(message);
+	if (!guildId) {
+		return;
+	}
+	const { phrases } = instance.discordBots[guildId];
 
 	if (!phrases.length) {
 		instance.send({
 			text: 'No phrases.',
-			channel,
+			message,
 		});
 		return;
 	}
@@ -18,7 +21,7 @@ const cmd = async ({ instance, messageEvent }) => {
 
 	instance.send({
 		text,
-		channel,
+		message,
 	});
 };
 

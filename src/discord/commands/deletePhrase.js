@@ -1,0 +1,42 @@
+const { DiscordBot } = require('../../db');
+
+const cmd = async ({ instance, message, match }) => {
+	const guildId = instance.getGuildId(message);
+	const discordBot = instance.discordBots[guildId];
+	if (!guildId || !discordBot) {
+		instance.send({
+			text: 'You can only delete phrases on servers',
+			message,
+		});
+		return;
+	}
+	const phrase = ((Array.isArray(match) && match[3]) || "").trim();
+
+	try {
+		const results = await DiscordBot.find({ _id: discordBot._id }).limit(1);
+		if (!results.length) {
+			throw new Error('Error looking up bot.');
+		}
+		const bot = results[0];
+		bot.phrases = bot.phrases.filter(p => p !== phrase);
+		await bot.save();
+		instance.discordBots[guildId] = JSON.parse(JSON.stringify(bot));
+		instance.send({
+			text: 'Success!',
+			message,
+		});
+	} catch (e) {
+		console.log(e);
+		instance.send({
+			text: 'Error deleting phrase.',
+			message,
+		});
+	}
+};
+
+module.exports = {
+  cmd,
+  regex: /^(delete|remove|rm)[ ]+(phrase|saying)[ ]+(.+)$/i,
+  name: 'Delete Phrase',
+  usage: 'bot delete phrase [PHRASE]',
+};

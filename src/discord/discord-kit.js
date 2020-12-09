@@ -101,12 +101,13 @@ class DiscordBotInstance {
 				this.phrasesActive[guildId] = true;
 
 				// pick an active markov chain if appropriate
+				const chains = this.getGuildMarkovChains(guildId);
 				if (
-					Object.keys(this.markovChains).length &&
+					Object.keys(chains).length &&
 					(!this.discordBots[guildId].activeMarkovChainId || !this.getActiveMarkovChain(guildId))
 				) {
 					// pick a default markov chain ID if a correct one isn't already selected
-					const id = Object.keys(this.markovChains)[0];
+					const id = Object.keys(chains)[0];
 					this.discordBots[guildId].activeMarkovChainId = id;
 					discordBot.activeMarkovChainId = id;
 					discordBot.save();
@@ -215,6 +216,17 @@ class DiscordBotInstance {
 		Boolean(this.getActiveMarkovChain(guildId));
 
 	getActiveMarkovChain = (guildId) => this.markovChains[this.discordBots[guildId].activeMarkovChainId];
+
+	getGuildMarkovChains = (guildId) => {
+		const chains = {};
+		Object.keys(this.markovChains).forEach((id) => {
+			const c = this.markovChains[id];
+			if (c.discordGuildId === guildId) {
+				chains[id] = c;
+			}
+		});
+		return chains;
+	};
 
 	generateMarkovChainMessage = (guildId) => {
 		if (this.canUseMarkovChain(guildId)) {

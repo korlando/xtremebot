@@ -1,6 +1,10 @@
 const cmd = async ({ instance, message }) => {
 	const guildId = instance.getGuildId(message);
-	const ids = Object.keys(instance.markovChains);
+	if (!guildId) {
+		return;
+	}
+	const chains = instance.getGuildMarkovChains(guildId);
+	const ids = Object.keys(chains);
 
 	if (!ids.length) {
 		instance.send({
