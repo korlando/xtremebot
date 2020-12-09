@@ -258,10 +258,6 @@ class DiscordBotInstance {
 			}
 		}
 
-		if (message.author.id === '336611654647414794') {
-			// message.channel.send('hello');
-		}
-
 		// cycle through main flows
 		for (let i = 0; i < flows.length; i++) {
 			const success = await flows[i]({ instance: this, text: content, message });
