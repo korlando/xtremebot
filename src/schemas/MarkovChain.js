@@ -6,6 +6,10 @@ const MarkovChainSchema = new mongoose.Schema({
 	slackChannelId: String,
 	slackUserId: String,
 	slackAppId: String,
+	discordGuildId: String,
+	discordChannelId: String,
+	discordUserId: String,
+	discordBotId: String,
 	predictionLength: Number,
 	frequencyTable: String,
 	createdAt: {

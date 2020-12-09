@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 
 const routes = require('./src/routes');
+const discord = require('./src/discord');
 
 mongoose.Promise = bluebird;
 
