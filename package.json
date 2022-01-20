@@ -8,11 +8,11 @@
 		"url": "git+https://github.com/korlando/xtremebot.git"
 	},
 	"dependencies": {
-		"@slack/events-api": "^3.0.0",
-		"@slack/web-api": "^6.0.0",
+		"@slack/events-api": "^3.0.1",
+		"@slack/web-api": "^6.5.1",
 		"bluebird": "^3.7.2",
 		"discord.js": "^12.5.1",
-		"express": "^4.17.1",
+		"express": "^4.17.2",
 		"helmet": "^4.4.1",
 		"minimist": "^1.2.5",
 		"moment": "^2.29.1",
