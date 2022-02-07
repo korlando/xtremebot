@@ -26,7 +26,8 @@ const cmd = async ({ instance, messageEvent, match }) => {
 	chain.name = name;
 	chain.predictionLength = windowSize;
 	chain.discordBotId = instance.botId;
-	chain.discordGuildId = guildId;
+	chain.slackTeamId = instance.botTeamId;
+	chain.slackAppId = instance.appId;
 	chain.frequencyTable = JSON.stringify({
 		predictionLength: windowSize,
 		frequencyTable: {},
