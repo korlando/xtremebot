@@ -45,8 +45,8 @@ const cmd = async ({ instance, messageEvent, match }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(activate|switch)[ ]+markov[ ]+([^ ]+)$/i,
-  name: 'Switch Markov Chain',
-  usage: 'bot switch markov [markov ID]',
+	cmd,
+	regex: /^(activate|switch)[ ]+markov[ ]+([^ ]+)$/i,
+	name: 'Switch Markov Chain',
+	usage: 'bot switch markov [markov ID]',
 };

@@ -23,8 +23,8 @@ const cmd = async ({ instance, messageEvent }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(list|ls)[ ]+(phrases|sayings)([ ]+)?$/i,
-  name: 'List Phrases',
-  usage: 'bot list phrases',
+	cmd,
+	regex: /^(list|ls)[ ]+(phrases|sayings)([ ]+)?$/i,
+	name: 'List Phrases',
+	usage: 'bot list phrases',
 };

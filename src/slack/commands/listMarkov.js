@@ -23,8 +23,8 @@ const cmd = async ({ instance, messageEvent }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(list|ls)[ ]+markov([ ]+chains)?$/i,
-  name: 'List Markov Chains',
-  usage: 'bot list markov',
+	cmd,
+	regex: /^(list|ls)[ ]+markov([ ]+chains)?$/i,
+	name: 'List Markov Chains',
+	usage: 'bot list markov',
 };

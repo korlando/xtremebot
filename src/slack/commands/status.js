@@ -4,7 +4,7 @@ const cmd = async ({ instance, messageEvent }) => {
 	text += `Phrases: ${instance.phrasesActive ? '`ON`' : '`OFF`'}\n# Phrases: ${instance.slackBot.phrases.length}\n\n`;
 	// markov
 	text += `Markov Chains: ${instance.markovActive ? '`ON`' : '`OFF`'}\n`;
-	if (instance.markovActive) {
+	if (instance.canUseMarkovChain()) {
 		const mc = instance.getActiveMarkovChain();
 		text += `Active Chain: ${mc.name} (\`${mc._id}\`)\n`;
 	}
@@ -15,8 +15,8 @@ const cmd = async ({ instance, messageEvent }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^status([ ]+report)?$/i,
-  name: 'Status Report',
-  usage: 'bot status',
+	cmd,
+	regex: /^status([ ]+report)?$/i,
+	name: 'Status Report',
+	usage: 'bot status',
 };

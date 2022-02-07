@@ -40,11 +40,11 @@ class SlackBotInstance {
 			this.messageMiddleware = messageMiddleware;
 		}
 
-		console.log('Initializing Slack bot...');
 		this.initialize();
 	}
 
 	initialize = async () => {
+		console.log('Initializing Slack bot...');
 		try {
 			// fetch the user and team IDs of each bot instance
 			const authRes = await methods.authTest(this.web);
@@ -105,7 +105,9 @@ class SlackBotInstance {
 				slackBot.activeMarkovChainId = id;
 				slackBot.save();
 			}
-			this.markovActive = true;
+			if (this.slackBot.activeMarkovChainId) {
+				this.markovActive = true;
+			}
 
 			// get users from this team
 			const usersListRes = await methods.getUsersList(this.web);

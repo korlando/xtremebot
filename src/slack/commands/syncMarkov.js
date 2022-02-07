@@ -15,9 +15,9 @@ const cmd = async ({ instance, messageEvent }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^sync markov$/i,
-  name: 'Sync Markov Chains',
-  usage: 'bot sync markov',
-  hidden: true,
+	cmd,
+	regex: /^sync markov$/i,
+	name: 'Sync Markov Chains',
+	usage: 'bot sync markov',
+	hidden: true,
 };

@@ -9,6 +9,7 @@ module.exports = [
 	require('../commands/addTrigger'),
 	require('../commands/deleteTrigger'),
 	require('../commands/listTriggers'),
+	require('../commands/addMarkov'),
 	require('../commands/toggleMarkov'),
 	require('../commands/saveMarkov'),
 	require('../commands/switchMarkov'),

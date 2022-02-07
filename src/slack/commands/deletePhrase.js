@@ -27,8 +27,8 @@ const cmd = async ({ instance, messageEvent, match }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(delete|remove|rm)[ ]+(phrase|saying)[ ]+(.+)$/i,
-  name: 'Delete Phrase',
-  usage: 'bot delete phrase [PHRASE]',
+	cmd,
+	regex: /^(delete|remove|rm)[ ]+(phrase|saying)[ ]+(.+)$/i,
+	name: 'Delete Phrase',
+	usage: 'bot delete phrase [PHRASE]',
 };

@@ -24,8 +24,8 @@ const cmd = async ({ instance, messageEvent, match }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(phrases|sayings)[ ]+([^ ]+)$/i,
-  name: 'Toggle Phrases',
-  usage: 'bot phrases [on|off]',
+	cmd,
+	regex: /^(phrases|sayings)[ ]+([^ ]+)$/i,
+	name: 'Toggle Phrases',
+	usage: 'bot phrases [on|off]',
 };

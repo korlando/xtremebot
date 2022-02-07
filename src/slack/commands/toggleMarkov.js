@@ -24,8 +24,8 @@ const cmd = async ({ instance, messageEvent, match }) => {
 };
 
 module.exports = {
-  cmd,
-  regex: /^(toggle[ ]+)?markov[ ]+(chains?[ ]+)?([^ ]+)$/i,
-  name: 'Toggle Markov Chains',
-  usage: 'bot markov [on|off]',
+	cmd,
+	regex: /^(toggle[ ]+)?markov[ ]+(chains?[ ]+)?([^ ]+)$/i,
+	name: 'Toggle Markov Chains',
+	usage: 'bot markov [on|off]',
 };
