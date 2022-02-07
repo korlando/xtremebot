@@ -32,6 +32,13 @@ module.exports = {
 					ignoreDoubleParens: true,
 				},
 			},
+			{
+				apiToken: process.env.TTT_SLACK_TOKEN,
+				commandTrigger: process.env.PHRASEBOT_TRIGGER,
+				messageMiddlewares: {
+					ignoreDoubleParens: true,
+				},
+			},
 		],
 	},
 	discord: {
