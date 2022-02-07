@@ -17,14 +17,14 @@ const EVENTS = {
 // an instance is a workspace-specific instance of a bot, usually
 class SlackBotInstance {
 	/**
-	 *  token: a slack bot token
+	 *  apiToken: a slack bot API token
 	 *  commandTrigger: string pattern used at the start of commands
 	 *  messageMiddleware: function to be run before handleMessageEvent
 	 */
-	constructor(token, config = {}) {
+	constructor(apiToken, config = {}) {
 		const { commandTrigger, messageMiddleware, commands } = config;
-		this.token = token;
-		this.web = new WebClient(token);
+		this.token = apiToken;
+		this.web = new WebClient(apiToken);
 		this.initialized = false;
 		this.phrasesActive = false;
 		this.markovActive = false;
@@ -40,6 +40,7 @@ class SlackBotInstance {
 			this.messageMiddleware = messageMiddleware;
 		}
 
+		console.log('Initializing Slack bot...');
 		this.initialize();
 	}
 
@@ -131,6 +132,7 @@ class SlackBotInstance {
 			this.slackUsers = usersListRes.members;
 
 			this.initialized = true;
+			console.log('Slack bot initialized.');
 
 			// save the markov chain (if applicable) every 10 minutes
 			this.saveMarkovChainTimer = setInterval(() => {
@@ -143,6 +145,56 @@ class SlackBotInstance {
 		} catch (e) {
 			console.log(e);
 		}
+	};
+
+	handleEvent = async (slackEvent) => {
+		let { event } = slackEvent;
+		if (event.type !== EVENTS.MESSAGE) {
+			// only handle message events for now
+			return;
+		}
+
+		if (!this.initialized) {
+			// bot hasn't finished set up
+			return;
+		}
+
+		const { teamId, apiAppId } = slackEvent;
+		const { text, channel, user } = event;
+
+		if (typeof text !== 'string') {
+			return;
+		}
+		if (teamId !== this.botTeamId || apiAppId !== this.appId) {
+			// event is not meant for this bot
+			return;
+		}
+		if (user === this.botUserId) {
+			// prevent cycle where bot responds to itself
+			return;
+		}
+
+		const mm = this.messageMiddleware;
+		// use message middlewares
+		if (utils.isFunc(mm)) {
+			// single middleware
+			event = mm(event);
+			if (!event) {
+				return;
+			}
+		} else if (Array.isArray(mm)) {
+			// multiple middlewares
+			for (let i = 0; i < mm.length; i++) {
+				const m = mm[i];
+				if (utils.isFunc(m)) {
+					event = m(event);
+					if (!event) {
+						return;
+					}
+				}
+			}
+		}
+		this.handleMessageEvent(event);
 	};
 
 	handleMessageEvent = async (messageEvent) => {};
@@ -231,63 +283,4 @@ class SlackBotInstance {
 	};
 }
 
-const handleMessageEvent = async (slackEvent, instances) => {
-	const { teamId, apiAppId } = slackEvent;
-	let { event } = slackEvent;
-	const { text, channel, user } = event;
-
-	if (typeof text !== 'string') {
-		return;
-	}
-
-	// find the right instance according to the team ID
-	for (let i = 0; i < instances.length; i++) {
-		const instance = instances[i];
-		if (teamId !== instance.botTeamId || apiAppId !== instance.appId) {
-			continue;
-		}
-		if (!instance.initialized) {
-			// bot hasn't finished set up
-			continue;
-		}
-		if (user === instance.botUserId) {
-			// prevent cycle where bot responds to itself
-			continue;
-		}
-
-		const mm = instance.messageMiddleware;
-		// use message middlewares
-		if (utils.isFunc(mm)) {
-			event = mm(event);
-			if (!event) {
-				return;
-			}
-		} else if (Array.isArray(mm)) {
-			for (let i = 0; i < mm.length; i++) {
-				const m = mm[i];
-				if (utils.isFunc(m)) {
-					event = m(event);
-					if (!event) {
-						return;
-					}
-				}
-			}
-		}
-		instance.handleMessageEvent(event);
-	}
-};
-
-const slackEventHandler = async (slackEvent, instances) => {
-	const { event } = slackEvent;
-	const { type } = event;
-	switch (type) {
-		case EVENTS.MESSAGE:
-			await handleMessageEvent(slackEvent, instances);
-			return;
-	}
-};
-
-module.exports = {
-	SlackBotInstance,
-	slackEventHandler,
-};
+module.exports = SlackBotInstance;

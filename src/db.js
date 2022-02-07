@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const NAME = 'XTREMEBOT_MONGO_URL';
+const VAR_NAME = 'XTREMEBOT_MONGO_URL';
 
-if (!process.env[NAME]) {
-  throw new Error(`Missing environment variable: ${NAME}`);
+if (!process.env[VAR_NAME]) {
+	throw new Error(`Missing environment variable: ${VAR_NAME}`);
 }
 
-const conn = mongoose.createConnection(process.env[NAME]);
+const conn = mongoose.createConnection(process.env[VAR_NAME]);
 
 const SlackBot = require('./schemas/SlackBot')(conn);
 const DiscordBot = require('./schemas/DiscordBot')(conn);

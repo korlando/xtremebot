@@ -9,7 +9,7 @@ const initWordbuckets = () => {
 		const letter = word[0].toLowerCase();
 		const obj = { word, def: dictionary[word] };
 		if (!wordBuckets[letter]) {
-			wordBuckets[letter] = [obj]
+			wordBuckets[letter] = [obj];
 		} else {
 			wordBuckets[letter].push(obj);
 		}

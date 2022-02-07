@@ -4,7 +4,7 @@ const { slackEventHandler } = require('../slack');
 
 const router = express.Router();
 
-router.post('/slack/events', (req, res) => {
+router.post('/events', (req, res) => {
 	// slack will send a challenge param for verification of this URL
 	const { challenge } = req.body;
 	if (challenge) {
@@ -14,6 +14,7 @@ router.post('/slack/events', (req, res) => {
 	}
 	// make the payload javascript-friendly
 	const slackEvent = transformSlackEventBody(req.body);
+	// feed the payload to all active slack bots
 	slackEventHandler(slackEvent);
 	res.status(200).end();
 });
