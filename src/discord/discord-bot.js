@@ -10,10 +10,6 @@ const {
 } = require('../db');
 const { FrequencyTable } = require('../markov');
 
-const EVENTS = {
-	MESSAGE: 'message',
-};
-
 class DiscordBotInstance {
 	/**
 	 *  apiToken: a discord bot API token
@@ -23,7 +19,14 @@ class DiscordBotInstance {
 	constructor(apiToken, config = {}) {
 		const { commandTrigger, messageMiddleware, commands } = config;
 		this.token = apiToken;
-		this.client = new Discord.Client();
+		console.log('test test test');
+		this.client = new Discord.Client({
+			intents: [
+				Discord.Intents.FLAGS.GUILDS,
+				Discord.Intents.FLAGS.GUILD_MESSAGES,
+				Discord.Intents.FLAGS.DIRECT_MESSAGES,
+			],
+		});
 		this.initialized = false;
 		// maps guild id to boolean representing whether phrases are active
 		this.phrasesActive = {};
@@ -54,7 +57,7 @@ class DiscordBotInstance {
 			this.initialize();
 		});
 
-		this.client.on('message', (message) => {
+		this.client.on('messageCreate', (message) => {
 			if (!this.initialized) {
 				return;
 			}
