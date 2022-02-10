@@ -9,4 +9,5 @@ module.exports = [
 	require('../commands/listMarkov'),
 	require('../commands/listPhrases'),
 	require('../commands/status'),
+	require('../commands/toggleMarkov'),
 ];
