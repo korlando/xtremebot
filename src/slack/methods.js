@@ -12,8 +12,8 @@ module.exports = {
 
 	// https://api.slack.com/methods/users.conversations
 	listConversations: async (webClient) => {
-	  const res = await webClient.users.conversations();
-	  return res;
+		const res = await webClient.users.conversations();
+		return res;
 	},
 
 	// https://api.slack.com/methods/bots.info

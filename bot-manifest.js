@@ -34,7 +34,7 @@ module.exports = {
 			},
 			{
 				apiToken: process.env.TTT_SLACK_TOKEN,
-				commandTrigger: process.env.PHRASEBOT_TRIGGER,
+				commandTrigger: process.env.SMITH_LIVE_XTREMEBOT_TRIGGER,
 				messageMiddlewares: {
 					ignoreDoubleParens: true,
 				},
