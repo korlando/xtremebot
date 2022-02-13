@@ -7,6 +7,11 @@
 		"type": "git",
 		"url": "git+https://github.com/korlando/xtremebot.git"
 	},
+	"author": {
+		"name": "Keith Orlando",
+		"email": "keith@airk.ai",
+		"url": "https://keithorlando.com"
+	},
 	"dependencies": {
 		"@slack/events-api": "^3.0.1",
 		"@slack/web-api": "^6.6.0",
