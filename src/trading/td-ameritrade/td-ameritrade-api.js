@@ -4,6 +4,8 @@ const WebSocket = require('websocket').client;
 
 const {
 	transformTDAGetAccountsResponse,
+	transformTDAGetQuoteResponse,
+	transformTDAGetUserPrincipalsResponse,
 } = require('./transforms');
 
 const TD_AMERITRADE_API = 'https://api.tdameritrade.com';
@@ -80,7 +82,7 @@ class TDAmeritradeAPI {
 				try {
 					await this.refreshAccessToken();
 				} catch (e) {
-					// TODO: notify client; this is dangerous
+					// TODO: notify client; an unrefreshed token is dangerous
 					console.error(e);
 				}
 			// give 10% buffer in case an error occurs while refreshing
@@ -98,11 +100,13 @@ class TDAmeritradeAPI {
 	};
 
 	getQuote = async (ticker) => {
-		return await this.apiGet(`/v1/marketdata/${ticker.toUpperCase()}/quotes`);
+		const res = await this.apiGet(`/v1/marketdata/${ticker.toUpperCase()}/quotes`);
+		return transformTDAGetQuoteResponse(res.data);
 	};
 
 	getUserPrincipals = async (fields) => {
-		return await this.apiGet(`/v1/userprincipals?fields=${encodeURIComponent(fields)}`);
+		const res = await this.apiGet(`/v1/userprincipals?fields=${encodeURIComponent(fields)}`);
+		return transformTDAGetUserPrincipalsResponse(res.data);
 	};
 
 	_connectWebSocket = (uri) => new Promise((resolve, reject) => {
@@ -123,8 +127,7 @@ class TDAmeritradeAPI {
 
 	getWebSocketConnection = async () => {
 		// https://developer.tdameritrade.com/content/streaming-data
-		const res = await this.getUserPrincipals('streamerSubscriptionKeys,streamerConnectionInfo');
-		const r = res.data;
+		const r = await this.getUserPrincipals('streamerSubscriptionKeys,streamerConnectionInfo');
 		// converts ISO-8601 response in snapshot to ms since epoch accepted by streamer
 		const tokenTimeStampAsDateObj = new Date(r.streamerInfo.tokenTimestamp);
 		const tokenTimeStampAsMs = tokenTimeStampAsDateObj.getTime();
