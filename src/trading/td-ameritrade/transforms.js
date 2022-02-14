@@ -168,4 +168,17 @@ module.exports = {
 			},
 		})),
 	}),
+	transformTDAGetPriceHistoryResponse: (data) => ({
+		candles: data.candles.map((c) => ({
+			open: c.open,
+			high: c.high,
+			low: c.low,
+			close: c.close,
+			volume: c.volume,
+			datetime: c.datetime,
+			date: new Date(c.datetime),
+		})),
+		symbol: data.symbol,
+		empty: data.empty,
+	}),
 };

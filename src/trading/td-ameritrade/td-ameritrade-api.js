@@ -6,6 +6,7 @@ const {
 	transformTDAGetAccountsResponse,
 	transformTDAGetQuoteResponse,
 	transformTDAGetUserPrincipalsResponse,
+	transformTDAGetPriceHistoryResponse,
 } = require('./transforms');
 
 const TD_AMERITRADE_API = 'https://api.tdameritrade.com';
@@ -107,6 +108,26 @@ class TDAmeritradeAPI {
 	getUserPrincipals = async (fields) => {
 		const res = await this.apiGet(`/v1/userprincipals?fields=${encodeURIComponent(fields)}`);
 		return transformTDAGetUserPrincipalsResponse(res.data);
+	};
+
+	// periodType - day, month, year, ytd
+	// period - day: 1, 2, 3, 4, 5, 10*, month: 1*, 2, 3, 6, year: 1*, 2, 3, 5, 10, 15, 20, ytd: 1
+	// frequencyType - day: minute, month: daily, weekly*, year: daily, weekly, monthly*, ytd: daily, weekly*
+	// frequency - minute: 1*, 5, 10, 15, 30, daily: 1, weekly: 1, monthly: ,
+	// startDate, endDate - in milliseconds since epoch
+	// needExtendedHoursData - true, false
+	getPriceHistory = async (ticker, { periodType, period, frequencyType, frequency, startDate, endDate, needExtendedHoursData }) => {
+		const params = {
+			period,
+			periodType,
+			frequency,
+			frequencyType,
+			startDate,
+			endDate,
+			needExtendedHoursData,
+		};
+		const res = await this.apiGet(`/v1/marketdata/${ticker.toUpperCase()}/pricehistory?${qs.stringify(params)}`);
+		return transformTDAGetPriceHistoryResponse(res.data);
 	};
 
 	_connectWebSocket = (uri) => new Promise((resolve, reject) => {
