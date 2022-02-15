@@ -7,6 +7,7 @@ class TDAmeritradeWebSocket {
 	}
 
 	initialize = () => new Promise(async (resolve, reject) => {
+		console.log('Establishing TD Ameritrade WebSocket connection...');
 		// https://developer.tdameritrade.com/content/streaming-data
 		const r = await this.TDA.getUserPrincipals('streamerSubscriptionKeys,streamerConnectionInfo');
 		// converts ISO-8601 response in snapshot to ms since epoch accepted by streamer
