@@ -1,6 +1,7 @@
 const axios = require('axios');
 const qs = require('qs');
-const WebSocket = require('websocket').client;
+
+const TDAmeritradeWebSocket = require('./td-ameritrade-ws');
 
 const {
 	transformTDAGetAccountsResponse,
@@ -130,65 +131,10 @@ class TDAmeritradeAPI {
 		return transformTDAGetPriceHistoryResponse(res.data);
 	};
 
-	_connectWebSocket = (uri) => new Promise((resolve, reject) => {
-		const ws = new WebSocket();
-
-		ws.on('connectFailed', (error) => {
-			console.error('TD Amertride WebSocket client to connect.');
-			reject(error);
-		});
-
-		ws.on('connect', (conn) => {
-			console.log('TD Ameritrade WebSocket client connected.');
-			resolve(conn);
-		});
-
-		ws.connect(uri);
-	});
-
 	getWebSocketConnection = async () => {
-		// https://developer.tdameritrade.com/content/streaming-data
-		const r = await this.getUserPrincipals('streamerSubscriptionKeys,streamerConnectionInfo');
-		// converts ISO-8601 response in snapshot to ms since epoch accepted by streamer
-		const tokenTimeStampAsDateObj = new Date(r.streamerInfo.tokenTimestamp);
-		const tokenTimeStampAsMs = tokenTimeStampAsDateObj.getTime();
-
-		const credentials = {
-			userid: r.accounts[0].accountId,
-			token: r.streamerInfo.token,
-			company: r.accounts[0].company,
-			segment: r.accounts[0].segment,
-			cddomain: r.accounts[0].accountCdDomainId,
-			usergroup: r.streamerInfo.userGroup,
-			accesslevel: r.streamerInfo.accessLevel,
-			authorized: 'Y',
-			timestamp: tokenTimeStampAsMs,
-			appid: r.streamerInfo.appId,
-			acl: r.streamerInfo.acl,
-		};
-
-		const request = {
-			requests: [
-				{
-					service: 'ADMIN',
-					command: 'LOGIN',
-					requestid: 0,
-					account: r.accounts[0].accountId,
-					source: r.streamerInfo.appId,
-					parameters: {
-						credential: qs.stringify(credentials),
-						token: r.streamerInfo.token,
-						version: '1.0',
-					},
-				},
-			],
-		};
-
-		const conn = await this._connectWebSocket(`wss://${r.streamerInfo.streamerSocketUrl}/ws`);
-		// authenticate
-		conn.send(JSON.stringify(request));
-
-		return conn;
+		const ws = new TDAmeritradeWebSocket(this);
+		await ws.initialize();
+		return ws;
 	};
 }
 
