@@ -114,7 +114,7 @@ class TDAmeritradeAPI {
 		return transformTDAGetUserPrincipalsResponse(res.data);
 	};
 
-	// params is an object configuration with the following keys:
+	// params is an object configurable with the following keys:
 	// periodType            - day, month, year, ytd
 	// period                - day: 1, 2, 3, 4, 5, 10*, month: 1*, 2, 3, 6, year: 1*, 2, 3, 5, 10, 15, 20, ytd: 1
 	// frequencyType         - day: minute, month: daily, weekly*, year: daily, weekly, monthly*, ytd: daily, weekly*
