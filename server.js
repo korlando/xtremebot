@@ -29,10 +29,15 @@ const port = Number(argv.p) || Number(argv.port) || 8008;
 const production = Boolean(argv.production);
 const runDiscord = Boolean(argv.discord);
 const runSlack = Boolean(argv.slack);
+const runTrading = Boolean(argv.trading);
 
 if (runDiscord) {
 	// requiring discord will run new Discord clients
-	const discord = require('./src/discord');
+	require('./src/discord');
+}
+
+if (runTrading) {
+	require('./src/trading');
 }
 
 app.set('port', port);
