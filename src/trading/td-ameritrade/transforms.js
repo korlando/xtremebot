@@ -104,6 +104,69 @@ const transformTDAQuote = (d) => ({
 	realtimeEntitled: d.realtimeEntitled,
 });
 
+const transformExpDateMap = (m) => {
+	const d = {};
+	for (const dateKey in m) {
+		d[dateKey] = {};
+		const strikeMap = m[dateKey];
+		for (const strike in strikeMap) {
+			const s = strikeMap[strike][0];
+			d[dateKey][strike] = {
+				putCall: s.putCall,
+				symbol: s.symbol,
+				description: s.description,
+				exchangeName: s.exchangeName,
+				bid: s.bid,
+				ask: s.ask,
+				last: s.last,
+				mark: s.mark,
+				bidSize: s.bidSize,
+				askSize: s.askSize,
+				bidAskSize: s.bidAskSize,
+				lastSize: s.lastSize,
+				highPrice: s.highPrice,
+				lowPrice: s.lowPrice,
+				openPrice: s.openPrice,
+				closePrice: s.closePrice,
+				totalVolume: s.totalVolume,
+				tradeDate: s.tradeDate,
+				tradeTimeInLong: s.tradeTimeInLong,
+				quoteTimeInLong: s.quoteTimeInLong,
+				netChange: s.netChange,
+				volatility: s.volatility,
+				delta: s.delta,
+				gamma: s.gamma,
+				theta: s.theta,
+				vega: s.vega,
+				rho: s.rho,
+				openInterest: s.openInterest,
+				timeValue: s.timeValue,
+				theoreticalOptionValue: s.theoreticalOptionValue,
+				theoreticalVolatility: s.theoreticalVolatility,
+				optionDeliverablesList: s.optionDeliverablesList,
+				strikePrice: s.strikePrice,
+				expirationDate: s.expirationDate,
+				daysToExpiration: s.daysToExpiration,
+				expirationType: s.expirationType,
+				lastTradingDay: s.lastTradingDay,
+				multiplier: s.multiplier,
+				settlementType: s.settlementType,
+				deliverableNote: s.deliverableNote,
+				isIndexOption: s.isIndexOption,
+				percentChange: s.percentChange,
+				markChange: s.markChange,
+				markPercentChange: s.markPercentChange,
+				intrinsicValue: s.intrinsicValue,
+				nonStandard: s.nonStandard,
+				pennyPilot: s.pennyPilot,
+				inTheMoney: s.inTheMoney,
+				mini: s.mini,
+			};
+		}
+	}
+	return d;
+};
+
 module.exports = {
 	transformTDAGetAccountsResponse: (data) => data.map((a) => ({
 		securitiesAccount: transformTDAGetAccountsSecuritiesAccount(a.securitiesAccount),
@@ -180,5 +243,21 @@ module.exports = {
 		})),
 		symbol: data.symbol,
 		empty: data.empty,
+	}),
+	transformGetOptionChainResponse: (data) => ({
+		symbol: data.symbol,
+		status: data.status,
+		underlying: data.underlying,
+		strategy: data.strategy,
+		interval: data.interval,
+		isDelayed: data.isDelayed,
+		isIndex: data.isIndex,
+		interestRate: data.interestRate,
+		underlyingPrice: data.underlyingPrice,
+		volatility: data.volatility,
+		daysToExpiration: data.daysToExpiration,
+		numberOfContracts: data.numberOfContracts,
+		putExpDateMap: transformExpDateMap(data.putExpDateMap),
+		callExpDateMap: transformExpDateMap(data.callExpDateMap),
 	}),
 };

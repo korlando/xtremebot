@@ -8,6 +8,7 @@ const {
 	transformTDAGetQuoteResponse,
 	transformTDAGetUserPrincipalsResponse,
 	transformTDAGetPriceHistoryResponse,
+	transformGetOptionChainResponse,
 } = require('./transforms');
 
 const TD_AMERITRADE_API = 'https://api.tdameritrade.com';
@@ -163,7 +164,7 @@ class TDAmeritradeAPI {
 	getOptionChain = async (params) => {
 		// https://developer.tdameritrade.com/option-chains/apis/get/marketdata/chains
 		const res = await this.apiGet(`/v1/marketdata/chains?${qs.stringify(params)}`);
-		return res.data;
+		return transformGetOptionChainResponse(res.data);
 	};
 
 	getWebSocketConnection = async () => {
