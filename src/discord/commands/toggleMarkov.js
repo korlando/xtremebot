@@ -3,7 +3,7 @@ const cmd = async ({ instance, message, match }) => {
 	if (!guildId || !Array.isArray(match)) {
 		return;
 	}
-	const state = ((Array.isArray(match) && match[3]) || "").trim().toLowerCase();
+	const state = (match[3] || "").trim().toLowerCase();
 
 	let stateText;
 	if (state === '0' || state === 'off') {

@@ -48,5 +48,5 @@ module.exports = {
 	cmd,
 	regex: /^(activate|switch)[ ]+markov[ ]+([^ ]+)$/i,
 	name: 'Switch Markov Chain',
-	usage: 'bot switch markov [markov ID]',
+	usage: 'bot switch markov [markov chain ID]',
 };
