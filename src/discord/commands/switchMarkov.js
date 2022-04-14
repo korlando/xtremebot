@@ -1,4 +1,4 @@
-const { SlackBot } = require('../../db');
+const { DiscordBot } = require('../../db');
 
 const cmd = async ({ instance, message, match }) => {
 	const guildId = instance.getGuildId(message);
