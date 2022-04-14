@@ -1,13 +1,18 @@
 module.exports = [
 	require('../commands/acronym'),
-	require('../commands/addMarkov'),
-	require('../commands/addPhrase'),
 	require('../commands/coinFlip'),
 	require('../commands/define'),
-	require('../commands/deletePhrase'),
 	require('../commands/listCommands'),
-	require('../commands/listMarkov'),
-	require('../commands/listPhrases'),
 	require('../commands/status'),
+
+	// phrases
+	require('../commands/listPhrases'),
+	require('../commands/addPhrase'),
+	require('../commands/deletePhrase'),
+
+	// markov
+	require('../commands/listMarkov'),
 	require('../commands/toggleMarkov'),
+	require('../commands/addMarkov'),
+	require('../commands/switchMarkov'),
 ];

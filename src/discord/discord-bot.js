@@ -222,6 +222,7 @@ class DiscordBotInstance {
 		Object.keys(this.markovChains).length > 0 &&
 		Boolean(this.getActiveMarkovChain(guildId));
 
+	// returns the currently used markov chain
 	getActiveMarkovChain = (guildId) => this.markovChains[this.discordBots[guildId].activeMarkovChainId];
 
 	getGuildMarkovChains = (guildId) => {
